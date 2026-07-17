@@ -19,7 +19,7 @@ export default defineConfig({
 		react(),
 		emdash({
 			database: d1({ binding: "DB" }),
-			storage: r2({ binding: "MEDIA" }),
+			storage: r2({ binding: "MEDIA"}),
 		}),
 	],
 	fonts: [
