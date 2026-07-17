@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { profile } from "../data/profile";
+
+const socials = profile.socials.filter((s) => s.url.startsWith("http"));
+---
+
+<Base title="Contact" description="Get in touch with Malin Dhamsara.">
+	<PageHeader
+		kicker="Contact"
+		title="Say hello."
+		lede="I read everything — even if it takes me a day to reply."
+	/>
+
+	<section class="pb-4">
+		<a
+			href={`mailto:${profile.email}`}
+			class="reveal u-link inline-block text-3xl font-semibold tracking-tight break-all sm:text-5xl"
+		>
+			{profile.email}
+		</a>
+	</section>
+
+	<section class="mt-16 sm:mt-24">
+		<p class="reveal kicker mb-2">Elsewhere</p>
+		<ul>
+			{
+				socials.map((social) => (
+					<li class="reveal">
+						<a
+							href={social.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="group flex items-baseline justify-between gap-6 border-t border-rule py-5"
+						>
+							<span class="text-lg font-medium tracking-tight transition-transform duration-300 ease-out group-hover:translate-x-1.5 sm:text-xl">
+								{social.label}
+							</span>
+							<span
+								aria-hidden="true"
+								class="text-faint transition-all duration-300 group-hover:translate-x-1 group-hover:text-ink"
+							>
+								&rarr;
+							</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</Base>

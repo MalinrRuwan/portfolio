@@ -1,0 +1,52 @@
+---
+import type { MediaValue } from "emdash";
+import { Image } from "emdash/ui";
+
+interface Props {
+	title: string;
+	summary?: string;
+	featuredImage: MediaValue | string;
+	href: string;
+	client?: string;
+	year?: string;
+	featured?: boolean;
+}
+
+const { title, summary, featuredImage, href, client, year, featured } =
+	Astro.props;
+---
+
+<article class="reveal">
+	<a href={href} class="group block">
+		<div class="overflow-hidden rounded-md bg-chip">
+			<Image
+				image={featuredImage}
+				class:list={[
+					"w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]",
+					featured ? "aspect-[16/9]" : "aspect-[4/3]",
+				]}
+			/>
+		</div>
+		<div class="mt-5 flex items-baseline justify-between gap-6">
+			<div class="min-w-0">
+				<h2
+					class="text-xl font-semibold tracking-tight transition-colors group-hover:underline group-hover:decoration-rule group-hover:underline-offset-[6px]"
+				>
+					{title}
+				</h2>
+				{
+					summary && (
+						<p class="mt-1.5 line-clamp-2 max-w-xl text-base/7 text-muted">
+							{summary}
+						</p>
+					)
+				}
+			</div>
+			{(client || year) && (
+				<p class="shrink-0 text-sm text-faint tabular-nums">
+					{[client, year].filter(Boolean).join(" · ")}
+				</p>
+			)}
+		</div>
+	</a>
+</article>

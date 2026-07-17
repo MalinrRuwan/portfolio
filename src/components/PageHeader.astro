@@ -1,0 +1,24 @@
+---
+interface Props {
+	kicker: string;
+	title: string;
+	lede?: string;
+}
+
+const { kicker, title, lede } = Astro.props;
+---
+
+<header class="pt-20 pb-14 sm:pt-32 sm:pb-20">
+	<p class="reveal kicker">{kicker}</p>
+	<h1 class="reveal display mt-5" style="--reveal-delay: 80ms">{title}</h1>
+	{
+		lede && (
+			<p
+				class="reveal mt-6 max-w-2xl font-serif text-2xl italic text-muted sm:text-3xl"
+				style="--reveal-delay: 160ms"
+			>
+				{lede}
+			</p>
+		)
+	}
+</header>

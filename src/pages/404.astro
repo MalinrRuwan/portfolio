@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Page not found">
+	<section class="pt-24 pb-16 sm:pt-36">
+		<p class="reveal kicker">404</p>
+		<h1 class="reveal display mt-5" style="--reveal-delay: 80ms">
+			Nothing here.
+		</h1>
+		<p
+			class="reveal mt-6 max-w-xl font-serif text-2xl italic text-muted"
+			style="--reveal-delay: 160ms"
+		>
+			The page you&rsquo;re looking for doesn&rsquo;t exist or has moved.
+		</p>
+		<a
+			href="/"
+			class="reveal u-link mt-10 inline-block text-sm"
+			style="--reveal-delay: 240ms"
+		>
+			Back home <span aria-hidden="true">&rarr;</span>
+		</a>
+	</section>
+</Base>

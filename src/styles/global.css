@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — "quiet editorial" system. Warm paper background, ink
+ * text, hairline rules, one serif accent (Crimson Text italic). Colors
+ * use light-dark() so the palette follows the OS scheme with no JS.
+ */
+@theme {
+	--color-bg: light-dark(#fdfcfa, #131110);
+	--color-ink: light-dark(#1b1a17, #efece6);
+	--color-muted: light-dark(#75706a, #9b948a);
+	--color-faint: light-dark(#a8a29a, #6b655c);
+	--color-chip: light-dark(#f1eee9, #26231f);
+	--color-chip-hover: light-dark(#e8e4dd, #322e29);
+	--color-border: light-dark(#e7e3dc, #2c2823);
+	--color-rule: light-dark(#dedad2, #33302a);
+
+	--font-sans: var(--font-inter);
+	--font-serif: var(--font-crimson);
+
+	--container-site: 72rem;
+
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+	:root {
+		color-scheme: light dark;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		@apply bg-bg font-sans text-ink antialiased;
+		text-rendering: optimizeLegibility;
+	}
+
+	::selection {
+		background: var(--color-chip-hover);
+	}
+
+	:where(a, button):focus-visible {
+		outline: 1.5px solid var(--color-ink);
+		outline-offset: 3px;
+		border-radius: 2px;
+	}
+}
+
+/* Tiny uppercase section marker — the backbone of the layout. */
+@utility kicker {
+	@apply text-xs font-semibold tracking-[0.16em] uppercase text-muted;
+}
+
+/* Large editorial display type. */
+@utility display {
+	font-size: clamp(2.75rem, 8vw, 5.25rem);
+	font-weight: 600;
+	letter-spacing: -0.035em;
+	line-height: 1.02;
+	text-wrap: balance;
+}
+
+/* Animated underline for inline links. */
+@utility u-link {
+	text-decoration: underline;
+	text-decoration-color: var(--color-rule);
+	text-underline-offset: 0.28em;
+	text-decoration-thickness: 1px;
+	transition: text-decoration-color 200ms ease;
+
+	&:hover {
+		text-decoration-color: var(--color-ink);
+	}
+}
+
+/*
+ * Scroll reveal — elements start hidden (JS adds .is-revealed when they
+ * intersect). Without JS the no-js class on <html> keeps everything visible.
+ */
+@utility reveal {
+	opacity: 0;
+	transform: translateY(14px);
+	transition:
+		opacity 700ms var(--ease-out-expo),
+		transform 700ms var(--ease-out-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+
+	&.is-revealed {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@layer base {
+	.no-js .reveal {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+}
+
+/*
+ * Rich text — styles the HTML emitted by <PortableText />.
+ */
+@layer components {
+	.rich-text {
+		@apply text-lg/8 text-pretty;
+	}
+
+	.rich-text > * + * {
+		margin-top: 1.25em;
+	}
+
+	.rich-text h2 {
+		@apply pt-6 text-2xl font-semibold tracking-tight;
+	}
+
+	.rich-text h3 {
+		@apply pt-3 text-xl font-semibold tracking-tight;
+	}
+
+	.rich-text a {
+		@apply u-link;
+	}
+
+	.rich-text ul {
+		@apply list-disc space-y-1 pl-6;
+	}
+
+	.rich-text ol {
+		@apply list-decimal space-y-1 pl-6;
+	}
+
+	.rich-text blockquote {
+		@apply border-l-2 border-rule pl-5 font-serif text-xl italic text-muted;
+	}
+
+	.rich-text code {
+		@apply rounded bg-chip px-1.5 py-0.5 text-[0.875em];
+	}
+
+	.rich-text pre {
+		@apply overflow-x-auto rounded-lg bg-chip p-4 text-sm;
+	}
+
+	.rich-text pre code {
+		@apply bg-transparent p-0;
+	}
+
+	.rich-text hr {
+		@apply border-rule;
+	}
+
+	.rich-text img {
+		@apply rounded-lg;
+	}
+}

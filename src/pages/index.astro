@@ -1,0 +1,142 @@
+---
+import { getEmDashCollection, getSiteSettings } from "emdash";
+import Base from "../layouts/Base.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import PostRow from "../components/PostRow.astro";
+import { profile } from "../data/profile";
+
+const [settings, { entries: posts, cacheHint }] = await Promise.all([
+	getSiteSettings(),
+	getEmDashCollection("posts", {
+		orderBy: { published_at: "desc" },
+		limit: 4,
+	}),
+]);
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const name = settings?.title || "Malin Dhamsara";
+const tagline = settings?.tagline || "";
+---
+
+<Base>
+	{/* ——— Hero ——— */}
+	<section class="pt-20 pb-24 sm:pt-32 sm:pb-36">
+		<div class="reveal flex items-center justify-between gap-4">
+			<p class="kicker flex items-center gap-2.5">
+				<span
+					aria-hidden="true"
+					class="inline-block size-1.5 rounded-full bg-ink"
+				></span>
+				Open to opportunities
+			</p>
+			<p class="kicker hidden sm:block">{profile.location}</p>
+		</div>
+
+		<h1
+			class="reveal display mt-8"
+			style="--reveal-delay: 80ms"
+		>
+			{name}
+		</h1>
+
+		<p
+			class="reveal mt-6 max-w-2xl font-serif text-2xl italic text-muted sm:text-3xl"
+			style="--reveal-delay: 160ms"
+		>
+			{tagline}
+		</p>
+	</section>
+
+	{/* ——— About ——— */}
+	<section class="pb-24 sm:pb-36">
+		<SectionHeader index="01" label="About" />
+		<div class="reveal max-w-2xl space-y-5 text-lg/8 text-pretty">
+			{profile.about.map((paragraph) => <p>{paragraph}</p>)}
+		</div>
+	</section>
+
+	{/* ——— Stack ——— */}
+	<section class="pb-24 sm:pb-36">
+		<SectionHeader index="02" label="Stack" />
+		<div class="reveal grid gap-10 sm:grid-cols-3">
+			{
+				profile.stack.map((group) => (
+					<div>
+						<h3 class="text-sm font-semibold tracking-wide text-faint uppercase">
+							{group.label}
+						</h3>
+						<ul class="mt-4 space-y-2 text-lg/7">
+							{group.items.map((item) => (
+								<li>{item}</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+		</div>
+		<a
+			href={profile.resumeUrl}
+			class="reveal u-link mt-12 inline-block text-sm text-muted hover:text-ink"
+		>
+			Download résumé <span aria-hidden="true">&rarr;</span>
+		</a>
+	</section>
+
+	{/* ——— Volunteering ——— */}
+	<section class="pb-24 sm:pb-36">
+		<SectionHeader index="03" label="Volunteering" />
+		<ul>
+			{
+				profile.volunteering.map((entry) => (
+					<li class="reveal grid gap-1 border-t border-rule py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
+						<p class="text-sm text-faint tabular-nums">{entry.period}</p>
+						<div>
+							<h3 class="text-lg font-medium tracking-tight">{entry.title}</h3>
+							<p class="mt-1 max-w-2xl text-base/7 text-muted">
+								{entry.description}
+							</p>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	{/* ——— Education ——— */}
+	<section class="pb-24 sm:pb-36">
+		<SectionHeader index="04" label="Education" />
+		<ul>
+			{
+				profile.education.map((entry) => (
+					<li class="reveal grid gap-1 border-t border-rule py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
+						<p class="text-sm text-faint tabular-nums">{entry.period}</p>
+						<div>
+							<h3 class="text-lg font-medium tracking-tight">{entry.title}</h3>
+							<p class="mt-1 max-w-2xl text-base/7 text-muted">
+								{entry.description}
+							</p>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	{/* ——— Writing ——— */}
+	{
+		posts.length > 0 && (
+			<section>
+				<SectionHeader index="05" label="Writing" />
+				<ul>
+					{posts.map((post) => <PostRow post={post} />)}
+				</ul>
+				<a
+					href="/blog"
+					class="reveal u-link mt-8 inline-block text-sm text-muted hover:text-ink"
+				>
+					All posts <span aria-hidden="true">&rarr;</span>
+				</a>
+			</section>
+		)
+	}
+</Base>

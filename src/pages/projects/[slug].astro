@@ -1,0 +1,140 @@
+---
+import { getEmDashEntry, getEmDashCollection, decodeSlug } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) {
+	return Astro.redirect("/404");
+}
+
+const { entry: project, cacheHint } = await getEmDashEntry("projects", slug);
+if (!project) {
+	return Astro.redirect("/404");
+}
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const { entries: related } = await getEmDashCollection("projects", {
+	orderBy: { published_at: "desc" },
+	limit: 3,
+});
+const otherProjects = related.filter((p) => p.id !== project.id).slice(0, 2);
+
+const gallery = project.data.gallery as
+	| Array<{ url: string; alt?: string }>
+	| undefined;
+
+function getImageSrc(img: unknown): string | undefined {
+	if (!img || typeof img !== "object") return undefined;
+	const image = img as Record<string, unknown>;
+	return typeof image.src === "string" ? image.src : undefined;
+}
+
+const meta = [project.data.client, project.data.year]
+	.filter(Boolean)
+	.join(" · ");
+---
+
+<Base
+	title={project.data.title}
+	description={project.data.summary}
+	image={getImageSrc(project.data.featured_image)}
+>
+	<article class="pt-20 sm:pt-32">
+		<header class="max-w-3xl">
+			<p class="reveal kicker">
+				<a href="/projects" class="u-link">Projects</a>
+				{meta && <span aria-hidden="true" class="ml-2 text-faint">/ {meta}</span>}
+			</p>
+			<h1
+				class="reveal display mt-6"
+				style="--reveal-delay: 80ms"
+				{...project.edit.title}
+			>
+				{project.data.title}
+			</h1>
+			{
+				project.data.summary && (
+					<p
+						class="reveal mt-6 font-serif text-2xl italic text-muted"
+						style="--reveal-delay: 160ms"
+						{...project.edit.summary}
+					>
+						{project.data.summary}
+					</p>
+				)
+			}
+			{
+				project.data.url && (
+					<a
+						href={project.data.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="reveal u-link mt-8 inline-block text-sm"
+						style="--reveal-delay: 240ms"
+					>
+						View live project <span aria-hidden="true">&rarr;</span>
+					</a>
+				)
+			}
+		</header>
+
+		{
+			project.data.featured_image && (
+				<div
+					class="reveal mt-14 overflow-hidden rounded-md bg-chip sm:mt-20"
+					style="--reveal-delay: 200ms"
+					{...project.edit.featured_image}
+				>
+					<Image
+						image={project.data.featured_image}
+						class="aspect-[16/9] w-full object-cover"
+					/>
+				</div>
+			)
+		}
+
+		<div class="reveal rich-text mt-14 max-w-[42rem] sm:mt-20">
+			<PortableText value={project.data.content} />
+		</div>
+
+		{
+			gallery && gallery.length > 0 && (
+				<div class="mt-14 grid gap-6 sm:grid-cols-2">
+					{gallery.map((img) => (
+						<img
+							src={img.url}
+							alt={img.alt || ""}
+							loading="lazy"
+							class="w-full rounded-md object-cover"
+						/>
+					))}
+				</div>
+			)
+		}
+	</article>
+
+	{
+		otherProjects.length > 0 && (
+			<section class="mt-24 sm:mt-32">
+				<header class="reveal mb-10 flex items-baseline gap-4">
+					<h2 class="kicker">More projects</h2>
+					<div aria-hidden="true" class="ml-2 h-px grow bg-rule" />
+				</header>
+				<div class="grid gap-x-8 gap-y-14 sm:grid-cols-2">
+					{otherProjects.map((other) => (
+						<ProjectCard
+							title={other.data.title ?? "Untitled"}
+							summary={other.data.summary}
+							featuredImage={other.data.featured_image ?? ""}
+							href={`/projects/${other.id}`}
+							client={other.data.client}
+							year={other.data.year}
+						/>
+					))}
+				</div>
+			</section>
+		)
+	}
+</Base>

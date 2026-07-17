@@ -1,0 +1,60 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../../layouts/Base.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+
+const { entries: projects, cacheHint } = await getEmDashCollection("projects", {
+	orderBy: { published_at: "desc" },
+});
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const [featured, ...rest] = projects;
+---
+
+<Base
+	title="Projects"
+	description="Selected projects across web, electronics, and machine learning."
+>
+	<PageHeader
+		kicker="Projects"
+		title="Selected work."
+		lede="Things I've designed, built, and debugged."
+	/>
+
+	{
+		projects.length > 0 ? (
+			<div class="flex flex-col gap-14 sm:gap-20">
+				{featured && (
+					<ProjectCard
+							title={featured.data.title ?? "Untitled"}
+							summary={featured.data.summary}
+							featuredImage={featured.data.featured_image ?? ""}
+							href={`/projects/${featured.id}`}
+							client={featured.data.client}
+							year={featured.data.year}
+							featured
+						/>
+				)}
+				{rest.length > 0 && (
+					<div class="grid gap-x-8 gap-y-14 sm:grid-cols-2">
+						{rest.map((project) => (
+							<ProjectCard
+								title={project.data.title ?? "Untitled"}
+								summary={project.data.summary}
+								featuredImage={project.data.featured_image ?? ""}
+								href={`/projects/${project.id}`}
+								client={project.data.client}
+								year={project.data.year}
+							/>
+						))}
+					</div>
+				)}
+			</div>
+		) : (
+			<p class="text-lg text-muted">
+				No projects yet — they&rsquo;ll appear here soon.
+			</p>
+		)
+	}
+</Base>

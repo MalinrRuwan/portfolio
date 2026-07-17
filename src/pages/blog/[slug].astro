@@ -1,0 +1,69 @@
+---
+import { getEmDashEntry, decodeSlug } from "emdash";
+import { PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { formatDateLong } from "../../utils/date";
+
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) {
+	return Astro.redirect("/404");
+}
+
+const { entry: post, cacheHint } = await getEmDashEntry("posts", slug);
+if (!post) {
+	return Astro.redirect("/404");
+}
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+---
+
+<Base
+	title={post.data.title}
+	description={post.data.excerpt}
+	type="article"
+>
+	<article class="pt-20 sm:pt-32">
+		<header class="max-w-3xl">
+			<p class="reveal kicker">
+				<a href="/blog" class="u-link">Blog</a>
+				{
+					post.data.publishedAt && (
+						<>
+							<span aria-hidden="true" class="mx-2 text-faint">/</span>
+							<time datetime={post.data.publishedAt.toISOString()}>
+								{formatDateLong(post.data.publishedAt)}
+							</time>
+						</>
+					)
+				}
+			</p>
+			<h1
+				class="reveal display mt-6"
+				style="--reveal-delay: 80ms"
+				{...post.edit.title}
+			>
+				{post.data.title}
+			</h1>
+			{
+				post.data.excerpt && (
+					<p
+						class="reveal mt-6 font-serif text-2xl italic text-muted"
+						style="--reveal-delay: 160ms"
+						{...post.edit.excerpt}
+					>
+						{post.data.excerpt}
+					</p>
+				)
+			}
+		</header>
+
+		<div class="reveal rich-text mt-14 max-w-[42rem] sm:mt-20" style="--reveal-delay: 240ms">
+			<PortableText value={post.data.content} />
+		</div>
+
+		<footer class="mt-16 border-t border-rule pt-8 sm:mt-24">
+			<a href="/blog" class="u-link text-sm text-muted hover:text-ink">
+				<span aria-hidden="true">&larr;</span> All posts
+			</a>
+		</footer>
+	</article>
+</Base>

@@ -1,0 +1,547 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "Malin Dhamsara — Portfolio",
+		"description": "A minimal personal portfolio and blog",
+		"author": "Malin Dhamsara"
+	},
+	"settings": {
+		"title": "Malin Dhamsara",
+		"tagline": "Student, Web developer, Electronics enthusiast, ML enthusiast"
+	},
+	"collections": [
+		{
+			"slug": "projects",
+			"label": "Projects",
+			"labelSingular": "Project",
+			"supports": ["drafts", "revisions", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured Image",
+					"type": "image",
+					"required": true
+				},
+				{
+					"slug": "client",
+					"label": "Client",
+					"type": "string"
+				},
+				{
+					"slug": "year",
+					"label": "Year",
+					"type": "string"
+				},
+				{
+					"slug": "summary",
+					"label": "Summary",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "gallery",
+					"label": "Gallery",
+					"type": "json"
+				},
+				{
+					"slug": "url",
+					"label": "Project URL",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "posts",
+			"label": "Posts",
+			"labelSingular": "Post",
+			"supports": ["drafts", "revisions", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured Image",
+					"type": "image"
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		}
+	],
+	"taxonomies": [
+		{
+			"name": "category",
+			"label": "Categories",
+			"labelSingular": "Category",
+			"hierarchical": false,
+			"collections": ["projects"],
+			"terms": [
+				{
+					"slug": "web",
+					"label": "Web"
+				},
+				{
+					"slug": "electronics",
+					"label": "Electronics"
+				},
+				{
+					"slug": "machine-learning",
+					"label": "Machine Learning"
+				}
+			]
+		},
+		{
+			"name": "tag",
+			"label": "Tags",
+			"labelSingular": "Tag",
+			"hierarchical": false,
+			"collections": ["projects"],
+			"terms": [
+				{
+					"slug": "typescript",
+					"label": "TypeScript"
+				},
+				{
+					"slug": "python",
+					"label": "Python"
+				},
+				{
+					"slug": "embedded",
+					"label": "Embedded"
+				},
+				{
+					"slug": "ui-ux",
+					"label": "UI/UX"
+				}
+			]
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Primary Navigation",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Projects",
+					"url": "/projects"
+				},
+				{
+					"type": "custom",
+					"label": "Blog",
+					"url": "/blog"
+				},
+				{
+					"type": "custom",
+					"label": "Contact",
+					"url": "/contact"
+				}
+			]
+		}
+	],
+	"content": {
+		"projects": [
+			{
+				"id": "portfolio-cms",
+				"slug": "portfolio-cms",
+				"status": "published",
+				"data": {
+					"title": "Personal Portfolio",
+					"client": "Personal Project",
+					"year": "2026",
+					"summary": "This site — a minimal portfolio and blog built on a TypeScript CMS, designed in Figma and rendered with Astro.",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1200&h=900&fit=crop",
+							"alt": "Portfolio website on a laptop screen",
+							"filename": "portfolio-cms.jpg"
+						}
+					},
+					"url": "https://github.com/emdash-cms/emdash",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "I wanted a portfolio that I own end to end — content, design, and infrastructure — without giving up the convenience of a CMS. The result is this site: an Astro front end backed by EmDash, with every page server-rendered.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+							},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The stack",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Astro for rendering, Tailwind CSS for styling, SQLite for storage, and an admin panel for editing. The design started as four Figma frames and was translated into a small, token-driven design system.",
+									"_key": "k5"
+								}
+							],
+							"_key": "k4"
+						}
+					]
+				},
+				"taxonomies": {
+					"category": ["web"],
+					"tag": ["typescript", "ui-ux"]
+				}
+			},
+			{
+				"id": "line-follower",
+				"slug": "line-follower",
+				"status": "published",
+				"data": {
+					"title": "Line Follower Robot",
+					"client": "University Project",
+					"year": "2025",
+					"summary": "An autonomous line-following robot built around a custom PCB and a PID control loop tuned on the track.",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1561144257-e32e8efc6c4f?w=1200&h=900&fit=crop",
+							"alt": "Close-up of a small robot circuit board",
+							"filename": "line-follower.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The brief was simple: follow a black line around a track as fast as possible without leaving it. The interesting part was everything underneath — sensor calibration, motor control, and a PID loop that had to be tuned by hand.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+							},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Hardware",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "An array of IR reflectance sensors feeds into a microcontroller that drives two DC motors through an H-bridge. I designed the board, soldered it, and wrote the firmware in C.",
+									"_key": "k5"
+								}
+							],
+							"_key": "k4"
+						}
+					]
+				},
+				"taxonomies": {
+					"category": ["electronics"],
+					"tag": ["embedded"]
+				}
+			},
+			{
+				"id": "digit-classifier",
+				"slug": "digit-classifier",
+				"status": "published",
+				"data": {
+					"title": "Digit Classifier",
+					"client": "Personal Project",
+					"year": "2025",
+					"summary": "A handwritten digit recognizer trained from scratch — first with NumPy, then with a proper framework — to understand what the abstractions hide.",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1527474305487-b87b222841cc?w=1200&h=900&fit=crop",
+							"alt": "Neural network visualization",
+							"filename": "digit-classifier.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Everyone's first neural network recognizes digits. I did it twice: once with nothing but NumPy, deriving backpropagation by hand, and once with a modern framework to appreciate what it does for you.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+							},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [
+								{
+									"_type": "span",
+									"text": "What I learned",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Writing gradient descent from scratch teaches you more in a weekend than a month of copying tutorials. The NumPy version reached 97% accuracy — slow, but mine.",
+									"_key": "k5"
+								}
+							],
+							"_key": "k4"
+						}
+					]
+				},
+				"taxonomies": {
+					"category": ["machine-learning"],
+					"tag": ["python"]
+				}
+			},
+			{
+				"id": "task-cli",
+				"slug": "task-cli",
+				"status": "published",
+				"data": {
+					"title": "Task CLI",
+					"client": "Personal Project",
+					"year": "2024",
+					"summary": "A tiny command-line task manager that stores everything in a single plain-text file — grep-able, git-able, yours.",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=1200&h=900&fit=crop",
+							"alt": "Terminal window with code",
+							"filename": "task-cli.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "I kept losing tasks in apps that wanted accounts, sync, and subscriptions. So I wrote the opposite: a single binary, a single text file, and commands that do exactly one thing.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+							},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Design",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The file format is human-readable by design, so version control gives you history for free and any text editor is a valid client. The CLI is just a fast interface over it.",
+									"_key": "k5"
+								}
+							],
+							"_key": "k4"
+						}
+					]
+				},
+				"taxonomies": {
+					"category": ["web"],
+					"tag": ["python"]
+				}
+			}
+		],
+		"posts": [
+			{
+				"id": "post-own-your-tools",
+				"slug": "own-your-tools",
+				"status": "published",
+				"data": {
+					"title": "Own your tools",
+					"excerpt": "Why I rebuilt my portfolio on a CMS I control instead of another hosted page builder.",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Every few years I rebuild my personal site. Each time the same question comes up: rent or own? Hosted builders are fast, but the content lives in someone else's database, behind someone else's pricing page.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+							},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This time the answer was a small TypeScript CMS running on SQLite. The whole site — content included — fits in a git repository and a single database file. If I ever move hosts, I copy two files.",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The lesson generalizes: for things you expect to keep for a decade, prefer boring formats and tools you can inspect. Convenience is rented; plain text is owned.",
+									"_key": "k5"
+								}
+							],
+							"_key": "k4"
+						}
+					]
+				}
+			},
+			{
+				"id": "post-learning-in-public",
+				"slug": "learning-in-public",
+				"status": "published",
+				"data": {
+					"title": "Learning in public",
+					"excerpt": "Notes on writing down what I learn, and why the audience is mostly future me.",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The best study habit I have picked up is writing short notes about things as I learn them — not polished tutorials, just honest records of what confused me and what unstuck me.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+							},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Six months later, those notes are the fastest way back into a topic. Future me is the most frequent reader of this blog, and he is grateful for specifics: commands, error messages, dead ends.",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						}
+					]
+				}
+			},
+			{
+				"id": "post-soldering-teaches-patience",
+				"slug": "soldering-teaches-patience",
+				"status": "published",
+				"data": {
+					"title": "What soldering taught me about software",
+					"excerpt": "Hardware has no undo. Thinking before committing turns out to be a transferable skill.",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "When you solder a component backwards, there is no ctrl-z — there is a desoldering pump and ten minutes of regret. Hardware punishes haste in a way software rarely does.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+							},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "I noticed my code changing after a semester of electronics labs: I read datasheets — sorry, documentation — before writing anything, and I test assumptions at the boundary before building on top of them.",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Measure twice, cut once. It turns out the old advice works on keyboards too.",
+									"_key": "k5"
+								}
+							],
+							"_key": "k4"
+						}
+					]
+				}
+			}
+		]
+	}
+}

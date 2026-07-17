@@ -1,0 +1,144 @@
+---
+import { getMenu, getSiteSettings } from "emdash";
+import { EmDashHead } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import { Font } from "astro:assets";
+import { profile } from "../data/profile";
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	type?: "website" | "article";
+}
+
+const { title, description, image, type = "website" } = Astro.props;
+const settings = await getSiteSettings();
+const siteTitle = settings?.title || "Malin Dhamsara";
+const fullTitle = title ? `${title} — ${siteTitle}` : siteTitle;
+const siteDescription = settings?.tagline || "";
+
+const menu = await getMenu("primary");
+const pathname = Astro.url.pathname;
+
+const isCurrent = (url: string) =>
+	url !== "/" && (pathname === url || pathname.startsWith(`${url}/`));
+
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: "custom",
+	pageType: type,
+	title: fullTitle,
+	pageTitle: title ?? siteTitle,
+	description: description || siteDescription,
+	canonical: Astro.url.href,
+	image,
+	seo: { ogImage: image },
+	siteName: siteTitle,
+});
+
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{fullTitle}</title>
+		<EmDashHead page={pageCtx} />
+		<Font cssVariable="--font-inter" preload />
+		<Font cssVariable="--font-crimson" preload />
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title={`${siteTitle} RSS Feed`}
+			href="/rss.xml"
+		/>
+		<script is:inline>
+			document.documentElement.classList.remove("no-js");
+		</script>
+	</head>
+	<body class="flex min-h-screen flex-col">
+		<header class="mx-auto w-full max-w-site px-6 pt-8 sm:px-10">
+			<nav class="flex items-baseline justify-between gap-6">
+				<a
+					href="/"
+					class="text-sm font-semibold tracking-tight transition-colors hover:text-muted"
+				>
+					{siteTitle}
+				</a>
+				<div class="flex items-baseline gap-6 sm:gap-8">
+					{
+						menu?.items.map((item) => (
+							<a
+								href={item.url}
+								target={item.target}
+								aria-current={isCurrent(item.url) ? "page" : undefined}
+								class:list={[
+									"u-link text-sm font-medium",
+									isCurrent(item.url) ? "decoration-ink" : "text-muted hover:text-ink",
+								]}
+							>
+								{item.label}
+							</a>
+						))
+					}
+				</div>
+			</nav>
+		</header>
+
+		<main class="mx-auto w-full max-w-site grow px-6 sm:px-10">
+			<slot />
+		</main>
+
+		<footer class="mx-auto w-full max-w-site px-6 sm:px-10">
+			<div
+				class="mt-28 flex flex-col gap-3 border-t border-rule py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"
+			>
+				<p>&copy; {year} {siteTitle}</p>
+				<div class="flex items-center gap-5">
+					{
+						profile.socials.map((social) => (
+							<a
+								href={social.url}
+								class="u-link"
+								{...(social.url.startsWith("http")
+									? { target: "_blank", rel: "noopener noreferrer" }
+									: {})}
+							>
+								{social.label}
+							</a>
+						))
+					}
+				</div>
+			</div>
+		</footer>
+
+		<script>
+			// Scroll reveal: elements with .reveal fade/rise in when they enter
+			// the viewport. Gracefully no-ops with reduced motion or no IO.
+			const els = document.querySelectorAll<HTMLElement>(".reveal");
+			const reduced = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches;
+			if (reduced || !("IntersectionObserver" in window)) {
+				els.forEach((el) => el.classList.add("is-revealed"));
+			} else {
+				const io = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (entry.isIntersecting) {
+								entry.target.classList.add("is-revealed");
+								io.unobserve(entry.target);
+							}
+						}
+					},
+					{ rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
+				);
+				els.forEach((el) => io.observe(el));
+			}
+		</script>
+	</body>
+</html>

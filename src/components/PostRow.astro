@@ -1,0 +1,47 @@
+---
+import { formatDate } from "../utils/date";
+
+interface Props {
+	post: {
+		id: string;
+		data: {
+			title?: string;
+			excerpt?: string;
+			publishedAt?: Date | null;
+		};
+	};
+}
+
+const { post } = Astro.props;
+---
+
+<li class="reveal">
+	<a
+		href={`/blog/${post.id}`}
+		class="group flex items-baseline justify-between gap-6 border-t border-rule py-5 sm:py-6"
+	>
+		<span class="flex min-w-0 items-baseline gap-4">
+			<span
+				class="truncate text-lg font-medium tracking-tight transition-transform duration-300 ease-out group-hover:translate-x-1.5 sm:text-xl"
+			>
+				{post.data.title ?? "Untitled"}
+			</span>
+			<span
+				aria-hidden="true"
+				class="shrink-0 text-faint opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
+			>
+				&rarr;
+			</span>
+		</span>
+		{
+			post.data.publishedAt && (
+				<time
+					datetime={post.data.publishedAt.toISOString()}
+					class="shrink-0 text-sm text-faint tabular-nums"
+				>
+					{formatDate(post.data.publishedAt)}
+				</time>
+			)
+		}
+	</a>
+</li>
