@@ -3,6 +3,7 @@ import { getMenu, getSiteSettings } from "emdash";
 import { EmDashHead } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { Font } from "astro:assets";
+import SiteLogo from "../components/SiteLogo.astro";
 import { profile } from "../data/profile";
 import "../styles/global.css";
 
@@ -56,20 +57,37 @@ const year = new Date().getFullYear();
 			title={`${siteTitle} RSS Feed`}
 			href="/rss.xml"
 		/>
+		<link rel="icon" type="image/svg+xml" href="/Logo.svg" />
 		<script is:inline>
 			document.documentElement.classList.remove("no-js");
 		</script>
 	</head>
 	<body class="flex min-h-screen flex-col">
-		<header class="mx-auto w-full max-w-site px-6 pt-8 sm:px-10">
-			<nav class="flex items-baseline justify-between gap-6">
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-bg focus:shadow-sm"
+		>
+			Skip to main content
+		</a>
+
+		<header
+			class="site-header sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300"
+			data-header
+		>
+			<nav
+				class="mx-auto flex w-full max-w-site items-center justify-between gap-6 px-6 py-5 sm:px-10"
+				aria-label="Primary navigation"
+			>
 				<a
 					href="/"
-					class="text-sm font-semibold tracking-tight transition-colors hover:text-muted"
+					class="relative z-[55] transition-opacity hover:opacity-70"
+					aria-label={siteTitle}
 				>
-					{siteTitle}
+					<SiteLogo class="site-logo h-8 w-auto" />
 				</a>
-				<div class="flex items-baseline gap-6 sm:gap-8">
+
+				{/* Desktop links */}
+				<div class="hidden items-baseline gap-8 sm:flex">
 					{
 						menu?.items.map((item) => (
 							<a
@@ -78,18 +96,66 @@ const year = new Date().getFullYear();
 								aria-current={isCurrent(item.url) ? "page" : undefined}
 								class:list={[
 									"u-link text-sm font-medium",
-									isCurrent(item.url) ? "decoration-ink" : "text-muted hover:text-ink",
+									isCurrent(item.url)
+										? "text-ink decoration-ink"
+										: "text-muted hover:text-ink",
 								]}
 							>
 								{item.label}
 							</a>
 						))
-					}
+						}
+				</div>
+
+				{/* Mobile menu toggle */}
+				<button
+					type="button"
+					class="menu-toggle relative z-[55] flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded sm:hidden"
+					aria-expanded="false"
+					aria-controls="site-menu"
+					aria-label="Toggle navigation menu"
+				>
+					<span class="menu-line" aria-hidden="true"></span>
+					<span class="menu-line" aria-hidden="true"></span>
+				</button>
+
+				{/* Mobile menu panel */}
+				<div
+					id="site-menu"
+					class="site-menu fixed inset-x-0 top-0 z-40 min-h-screen opacity-0 transition-[opacity,transform] duration-300 ease-out sm:hidden"
+					role="dialog"
+					aria-modal="true"
+					aria-label="Primary navigation"
+					aria-hidden="true"
+					inert
+				>
+					<div class="site-menu-inner flex min-h-screen flex-col border-b border-rule bg-bg px-6 pb-12 pt-28 shadow-sm">
+						<div class="mx-auto flex max-w-site flex-col gap-2">
+							{
+								menu?.items.map((item, i) => (
+									<a
+										href={item.url}
+										target={item.target}
+										aria-current={isCurrent(item.url) ? "page" : undefined}
+										class:list={[
+											"site-menu-link block py-3 text-3xl font-semibold tracking-tight transition-colors",
+											isCurrent(item.url)
+												? "text-ink"
+												: "text-muted hover:text-ink",
+										]}
+										style={`--menu-delay: ${i * 40}ms`}
+									>
+										{item.label}
+									</a>
+								))
+							}
+						</div>
+					</div>
 				</div>
 			</nav>
 		</header>
 
-		<main class="mx-auto w-full max-w-site grow px-6 sm:px-10">
+		<main id="main" class="mx-auto w-full max-w-site grow px-6 sm:px-10">
 			<slot />
 		</main>
 
@@ -117,8 +183,110 @@ const year = new Date().getFullYear();
 		</footer>
 
 		<script>
-			// Scroll reveal: elements with .reveal fade/rise in when they enter
-			// the viewport. Gracefully no-ops with reduced motion or no IO.
+			// Scroll-aware header background
+			const header = document.querySelector<HTMLElement>("[data-header]");
+			if (header) {
+				let ticking = false;
+				const onScroll = () => {
+					if (!ticking) {
+						requestAnimationFrame(() => {
+							header.classList.toggle("is-scrolled", window.scrollY > 8);
+							ticking = false;
+						});
+						ticking = true;
+					}
+				};
+				window.addEventListener("scroll", onScroll, { passive: true });
+				header.classList.toggle("is-scrolled", window.scrollY > 8);
+			}
+
+			// Mobile menu
+			const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+			const menu = document.getElementById("site-menu");
+			if (toggle && menu) {
+				const focusableSelector =
+					'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+				const getFocusable = () =>
+					Array.from(menu.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+						(el) => !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden"),
+					);
+
+				const menuLinks = menu.querySelectorAll<HTMLAnchorElement>("a");
+				menuLinks.forEach((link) => (link.tabIndex = -1));
+				let isOpen = false;
+
+				const setOpen = (open: boolean) => {
+					const wasOpen = isOpen;
+					isOpen = open;
+					toggle.setAttribute("aria-expanded", String(open));
+					menu.classList.toggle("is-open", open);
+					menu.setAttribute("aria-hidden", String(!open));
+					menuLinks.forEach((link) => (link.tabIndex = open ? 0 : -1));
+					if (open) {
+						menu.removeAttribute("inert");
+						document.body.classList.add("menu-open-body");
+						const first = getFocusable()[0];
+						if (first) first.focus();
+					} else {
+						menu.setAttribute("inert", "");
+						document.body.classList.remove("menu-open-body");
+						if (wasOpen) toggle.focus();
+					}
+				};
+
+				toggle.addEventListener("click", () => {
+					setOpen(toggle.getAttribute("aria-expanded") !== "true");
+				});
+
+				// Close on Escape
+				document.addEventListener("keydown", (e) => {
+					if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+						setOpen(false);
+					}
+				});
+
+				// Close on clicking outside the panel
+				document.addEventListener("click", (e) => {
+					if (
+						toggle.getAttribute("aria-expanded") === "true" &&
+						e.target instanceof Node &&
+						!toggle.contains(e.target) &&
+						!menu.contains(e.target)
+					) {
+						setOpen(false);
+					}
+				});
+
+				// Close on navigating (link click)
+				menu.querySelectorAll("a").forEach((link) => {
+					link.addEventListener("click", () => setOpen(false));
+				});
+
+				// Focus trap
+				menu.addEventListener("keydown", (e) => {
+					if (e.key !== "Tab") return;
+					const focusable = getFocusable();
+					if (focusable.length === 0) return;
+					const first = focusable[0];
+					const last = focusable[focusable.length - 1];
+					if (e.shiftKey && document.activeElement === first) {
+						e.preventDefault();
+						last.focus();
+					} else if (!e.shiftKey && document.activeElement === last) {
+						e.preventDefault();
+						first.focus();
+					}
+				});
+
+				// Close when crossing into desktop breakpoint
+				window.addEventListener("resize", () => {
+					if (window.innerWidth >= 640 && toggle.getAttribute("aria-expanded") === "true") {
+						setOpen(false);
+					}
+				});
+			}
+
+			// Scroll reveal
 			const els = document.querySelectorAll<HTMLElement>(".reveal");
 			const reduced = window.matchMedia(
 				"(prefers-reduced-motion: reduce)",
@@ -140,5 +308,54 @@ const year = new Date().getFullYear();
 				els.forEach((el) => io.observe(el));
 			}
 		</script>
+
+		<style>
+			.site-header.is-scrolled {
+				background-color: var(--color-bg);
+				border-bottom: 1px solid var(--color-rule);
+			}
+
+			.menu-line {
+				display: block;
+				width: 1.25rem;
+				height: 1.5px;
+				background-color: var(--color-ink);
+				transition: transform 250ms ease, opacity 250ms ease;
+				transform-origin: center;
+			}
+			.menu-toggle[aria-expanded="true"] .menu-line:first-child {
+				transform: translateY(3.5px) rotate(45deg);
+			}
+			.menu-toggle[aria-expanded="true"] .menu-line:last-child {
+				transform: translateY(-3.5px) rotate(-45deg);
+			}
+
+			.site-menu {
+				--tw-translate-y: -1rem;
+				transform: translateY(var(--tw-translate-y));
+				pointer-events: none;
+			}
+			.site-menu.is-open {
+				pointer-events: auto;
+				opacity: 1;
+				--tw-translate-y: 0;
+			}
+			.site-menu-link {
+				opacity: 0;
+				transform: translateY(0.5rem);
+				transition:
+					opacity 350ms var(--ease-out-expo) var(--menu-delay, 0ms),
+					transform 350ms var(--ease-out-expo) var(--menu-delay, 0ms);
+			}
+			.site-menu.is-open .site-menu-link {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			.menu-open-body {
+				overflow: hidden;
+				overscroll-behavior: none;
+			}
+		</style>
 	</body>
 </html>

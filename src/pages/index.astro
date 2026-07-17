@@ -3,16 +3,28 @@ import { getEmDashCollection, getSiteSettings } from "emdash";
 import Base from "../layouts/Base.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import PostRow from "../components/PostRow.astro";
+import ProjectCard from "../components/ProjectCard.astro";
 import { profile } from "../data/profile";
 
-const [settings, { entries: posts, cacheHint }] = await Promise.all([
+const [
+	settings,
+	{ entries: posts, cacheHint: postsCacheHint },
+	{ entries: projects, cacheHint: projectsCacheHint },
+] = await Promise.all([
 	getSiteSettings(),
 	getEmDashCollection("posts", {
 		orderBy: { published_at: "desc" },
 		limit: 4,
 	}),
+	getEmDashCollection("projects", {
+		orderBy: { published_at: "desc" },
+		limit: 3,
+	}),
 ]);
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(postsCacheHint);
+	Astro.cache.set(projectsCacheHint);
+}
 
 const name = settings?.title || "Malin";
 const tagline = settings?.tagline || "";
@@ -55,9 +67,80 @@ const tagline = settings?.tagline || "";
 		</div>
 	</section>
 
+	{/* ——— Writing ——— */}
+	{
+		posts.length > 0 && (
+			<section class="pb-24 sm:pb-36">
+				<SectionHeader index="02" label="Writing" />
+				<ul>
+					{posts.map((post) => <PostRow post={post} />)}
+				</ul>
+				<a
+					href="/blog"
+					class="reveal u-link mt-8 inline-block text-sm text-muted hover:text-ink"
+				>
+					All posts <span aria-hidden="true">&rarr;</span>
+				</a>
+			</section>
+		)
+	}
+
+	{/* ——— Volunteering ——— */}
+	<section class="pb-24 sm:pb-36">
+		<SectionHeader index="03" label="Volunteering" />
+		<ul>
+			{
+				profile.volunteering.map((entry) => (
+					<li class="reveal grid gap-1 border-t border-rule py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
+						<p class="text-sm text-faint tabular-nums">{entry.period}</p>
+						<div>
+							<h3 class="text-lg font-medium tracking-tight">{entry.title}</h3>
+							<p class="mt-1 max-w-2xl text-base/7 text-muted">
+								{entry.description}
+							</p>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	{/* ——— Projects ——— */}
+	<section class="pb-24 sm:pb-36">
+		<SectionHeader index="04" label="Projects" />
+		{
+			projects.length > 0 ? (
+				<>
+					<div class="grid gap-10 sm:grid-cols-2">
+						{projects.map((project) => (
+							<ProjectCard
+								title={project.data.title ?? "Untitled"}
+								summary={project.data.summary}
+								featuredImage={project.data.featured_image ?? ""}
+								href={`/projects/${project.id}`}
+								client={project.data.client}
+								year={project.data.year}
+							/>
+						))}
+					</div>
+					<a
+						href="/projects"
+						class="reveal u-link mt-10 inline-block text-sm text-muted hover:text-ink"
+					>
+						All projects <span aria-hidden="true">&rarr;</span>
+					</a>
+				</>
+			) : (
+				<p class="reveal text-lg text-muted">
+					No projects yet — they&rsquo;ll appear here soon.
+				</p>
+			)
+		}
+	</section>
+
 	{/* ——— Stack ——— */}
 	<section class="pb-24 sm:pb-36">
-		<SectionHeader index="02" label="Stack" />
+		<SectionHeader index="05" label="Stack" />
 		<div class="reveal grid gap-10 sm:grid-cols-3">
 			{
 				profile.stack.map((group) => (
@@ -82,61 +165,4 @@ const tagline = settings?.tagline || "";
 		</a>
 	</section>
 
-	{/* ——— Volunteering ——— */}
-	<section class="pb-24 sm:pb-36">
-		<SectionHeader index="03" label="Volunteering" />
-		<ul>
-			{
-				profile.volunteering.map((entry) => (
-					<li class="reveal grid gap-1 border-t border-rule py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
-						<p class="text-sm text-faint tabular-nums">{entry.period}</p>
-						<div>
-							<h3 class="text-lg font-medium tracking-tight">{entry.title}</h3>
-							<p class="mt-1 max-w-2xl text-base/7 text-muted">
-								{entry.description}
-							</p>
-						</div>
-					</li>
-				))
-			}
-		</ul>
-	</section>
-
-	{/* ——— Education ——— */}
-	<section class="pb-24 sm:pb-36">
-		<SectionHeader index="04" label="Education" />
-		<ul>
-			{
-				profile.education.map((entry) => (
-					<li class="reveal grid gap-1 border-t border-rule py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
-						<p class="text-sm text-faint tabular-nums">{entry.period}</p>
-						<div>
-							<h3 class="text-lg font-medium tracking-tight">{entry.title}</h3>
-							<p class="mt-1 max-w-2xl text-base/7 text-muted">
-								{entry.description}
-							</p>
-						</div>
-					</li>
-				))
-			}
-		</ul>
-	</section>
-
-	{/* ——— Writing ——— */}
-	{
-		posts.length > 0 && (
-			<section>
-				<SectionHeader index="05" label="Writing" />
-				<ul>
-					{posts.map((post) => <PostRow post={post} />)}
-				</ul>
-				<a
-					href="/blog"
-					class="reveal u-link mt-8 inline-block text-sm text-muted hover:text-ink"
-				>
-					All posts <span aria-hidden="true">&rarr;</span>
-				</a>
-			</section>
-		)
-	}
 </Base>
