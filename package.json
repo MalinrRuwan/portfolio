@@ -12,6 +12,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "start": "node ./dist/server/entry.mjs",
+    "deploy": "astro build && wrangler deploy",
     "typecheck": "astro check"
   },
   "dependencies": {
