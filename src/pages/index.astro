@@ -3,7 +3,7 @@ import { getEmDashCollection, getSiteSettings } from "emdash";
 import Base from "../layouts/Base.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import PostRow from "../components/PostRow.astro";
-import ProjectCard from "../components/ProjectCard.astro";
+import ProjectRow from "../components/ProjectRow.astro";
 import { profile } from "../data/profile";
 
 const [
@@ -65,6 +65,12 @@ const tagline = settings?.tagline || "";
 		<div class="reveal max-w-2xl space-y-5 text-lg/8 text-pretty">
 			{profile.about.map((paragraph) => <p>{paragraph}</p>)}
 		</div>
+		<a
+			href={profile.resumeUrl}
+			class="reveal u-link mt-10 inline-block text-sm text-muted hover:text-ink"
+		>
+			Download résumé <span aria-hidden="true">&rarr;</span>
+		</a>
 	</section>
 
 	{/* ——— Writing ——— */}
@@ -91,7 +97,7 @@ const tagline = settings?.tagline || "";
 		<ul>
 			{
 				profile.volunteering.map((entry) => (
-					<li class="reveal grid gap-1 border-t border-rule py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
+					<li class="reveal grid gap-1 border-t border-rule py-6 first:border-t-0 sm:grid-cols-[10rem_1fr] sm:gap-8">
 						<p class="text-sm text-faint tabular-nums">{entry.period}</p>
 						<div>
 							<h3 class="text-lg font-medium tracking-tight">{entry.title}</h3>
@@ -111,24 +117,19 @@ const tagline = settings?.tagline || "";
 		{
 			projects.length > 0 ? (
 				<>
-					<div class="grid gap-10 sm:grid-cols-2">
+					<ul>
 						{projects.map((project) => (
-							<ProjectCard
-								title={project.data.title ?? "Untitled"}
-								summary={project.data.summary}
-								featuredImage={project.data.featured_image ?? ""}
-								href={`/projects/${project.id}`}
-								client={project.data.client}
-								year={project.data.year}
-							/>
+							<ProjectRow project={project} />
 						))}
+					</ul>
+					<div class="reveal mt-10">
+						<a
+							href="/projects"
+							class="u-link inline-block text-sm text-muted hover:text-ink"
+						>
+							All projects <span aria-hidden="true">&rarr;</span>
+						</a>
 					</div>
-					<a
-						href="/projects"
-						class="reveal u-link mt-10 inline-block text-sm text-muted hover:text-ink"
-					>
-						All projects <span aria-hidden="true">&rarr;</span>
-					</a>
 				</>
 			) : (
 				<p class="reveal text-lg text-muted">
@@ -157,12 +158,6 @@ const tagline = settings?.tagline || "";
 				))
 			}
 		</div>
-		<a
-			href={profile.resumeUrl}
-			class="reveal u-link mt-12 inline-block text-sm text-muted hover:text-ink"
-		>
-			Download résumé <span aria-hidden="true">&rarr;</span>
-		</a>
 	</section>
 
 </Base>

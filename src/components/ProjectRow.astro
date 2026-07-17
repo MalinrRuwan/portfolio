@@ -1,0 +1,44 @@
+---
+interface Props {
+	project: {
+		id: string;
+		data: {
+			title?: string;
+			summary?: string;
+			client?: string;
+			year?: string;
+		};
+	};
+}
+
+const { project } = Astro.props;
+const title = project.data.title ?? "Untitled";
+const meta = [project.data.client, project.data.year].filter(Boolean).join(" · ");
+---
+
+<li class="reveal border-t border-rule py-5 first:border-t-0 sm:py-6">
+	<a
+		href={`/projects/${project.id}`}
+		class="group flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+	>
+		<div class="min-w-0">
+			<h3
+				class="text-lg font-medium tracking-tight transition-transform duration-300 ease-out group-hover:translate-x-1.5 sm:text-xl"
+			>
+				{title}
+			</h3>
+			{
+				project.data.summary && (
+					<p class="mt-1 line-clamp-1 max-w-xl text-base/7 text-muted">
+						{project.data.summary}
+					</p>
+				)
+			}
+		</div>
+		{
+			meta && (
+				<p class="shrink-0 text-sm text-faint tabular-nums">{meta}</p>
+			)
+		}
+	</a>
+</li>
