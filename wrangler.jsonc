@@ -17,12 +17,6 @@
       "bucket_name": "portfolio-bucket"
     }
   ],
-  "kv_namespaces": [
-    {
-      "binding": "SESSION",
-      "id": "portfolio-session-kv"
-    }
-  ],
   "images": {
     "binding": "IMAGES"
   },
