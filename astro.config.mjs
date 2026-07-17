@@ -6,6 +6,8 @@ import { defineConfig, fontProviders } from "astro/config";
 import emdash, { local } from "emdash/astro";
 
 
+const isDev = process.env.NODE_ENV === "development";
+
 export default defineConfig({
 	output: "server",
   adapter: cloudflare(),

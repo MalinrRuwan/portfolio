@@ -79,7 +79,7 @@
  * Scroll reveal — elements start hidden (JS adds .is-revealed when they
  * intersect). Without JS the no-js class on <html> keeps everything visible.
  */
-@utility reveal {
+/*@utility reveal {
 	opacity: 0;
 	transform: translateY(14px);
 	transition:
@@ -91,7 +91,7 @@
 		opacity: 1;
 		transform: translateY(0);
 	}
-}
+}*/
 
 @layer base {
 	.no-js .reveal {

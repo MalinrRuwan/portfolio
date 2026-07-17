@@ -14,7 +14,7 @@ const [settings, { entries: posts, cacheHint }] = await Promise.all([
 ]);
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 
-const name = settings?.title || "Malin Dhamsara";
+const name = settings?.title || "Malin";
 const tagline = settings?.tagline || "";
 ---
 
