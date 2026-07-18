@@ -16,6 +16,7 @@ if (!project) {
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 
 const { entries: related } = await getEmDashCollection("projects", {
+    status : "published",
 	orderBy: { published_at: "desc" },
 	limit: 3,
 	status: "published",
