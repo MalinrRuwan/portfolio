@@ -1,12 +1,25 @@
 ---
-import { getEmDashEntry, decodeSlug } from "emdash";
+import { getEmDashEntry, decodeSlug, getEmDashCollection } from "emdash";
 import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import { formatDateLong } from "../../utils/date";
 
-const slug = decodeSlug(Astro.params.slug);
+const slug = decodeSlug(Astro.params.slug || undefined);
 if (!slug) {
 	return Astro.redirect("/404");
+}
+
+export const prerender = true;
+
+//generate static paths for all published posts
+export async function getStaticPaths() {
+  const { entries: posts } = await getEmDashCollection("posts", {
+    status: "published",
+  });
+
+  return posts.map((post) => ({
+    params: { slug: post.data.slug },
+  }));
 }
 
 const { entry: post, cacheHint } = await getEmDashEntry("posts", slug);

@@ -1,5 +1,12 @@
 {
 	"extends": "astro/tsconfigs/strict",
 	"include": [".astro/types.d.ts", "**/*"],
-	"exclude": ["dist"]
+	"exclude": ["dist"],
+	"compilerOptions": {
+    "moduleResolution": "Bundler", // Or "Bundler" if using Vite/Next.js
+    "module": "preserve",
+    "paths": {
+      "@/*": ["./src/*"] // Ensure your path aliases match your actual file trees
+    }
+  }
 }

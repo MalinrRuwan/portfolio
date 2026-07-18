@@ -5,6 +5,7 @@ import PageHeader from "../../components/PageHeader.astro";
 import PostRow from "../../components/PostRow.astro";
 
 const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
+    status: "published",
 	orderBy: { published_at: "desc" },
 });
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
