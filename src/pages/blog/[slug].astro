@@ -4,20 +4,6 @@ import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import { formatDateLong } from "../../utils/date";
 
-export const prerender = true;
-
- //generate static paths for all published posts
-export async function getStaticPaths() {
-  const { entries: posts } = await getEmDashCollection("posts", {
-    status: "published",
-  });
-
-  return posts.map((post) => ({
-    params: { slug: post.data.slug || undefined },
-  }));
-}
-
-
 const slug = decodeSlug(Astro.params.slug);
 if (!slug) {
 	return Astro.redirect("/404");

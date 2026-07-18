@@ -5,18 +5,6 @@ import Base from "../../layouts/Base.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 
 
-//generate static paths for all published projects
-export const prerender = true;
-export async function getStaticPaths() {
-  const { entries: related } = await getEmDashCollection("projects", {
-    status: "published",
-  });
-
-  return related.map((related) => ({
-    params: { slug: related.data.slug || undefined },
-  }));
-}
-
 const slug = decodeSlug(Astro.params.slug);
 if (!slug) {
 	return Astro.redirect("/404");
