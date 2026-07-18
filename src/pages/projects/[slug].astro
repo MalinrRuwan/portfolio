@@ -19,20 +19,19 @@ const { entries: related } = await getEmDashCollection("projects", {
     status : "published",
 	orderBy: { published_at: "desc" },
 	limit: 3,
-	status: "published",
 });
 
 //generate static paths for all published projects
-export const prerender = true;
-export async function getStaticPaths() {
-  const { entries: related } = await getEmDashCollection("projects", {
-    status: "published",
-  });
+// export const prerender = true;
+// export async function getStaticPaths() {
+//   const { entries: related } = await getEmDashCollection("projects", {
+//     status: "published",
+//   });
 
-  return related.map((related) => ({
-    params: { slug: related.data.slug },
-  }));
-}
+//   return related.map((related) => ({
+//     params: { slug: related.data.slug },
+//   }));
+// }
 
 const otherProjects = related.filter((p) => p.id !== project.id).slice(0, 2);
 
