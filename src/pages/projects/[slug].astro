@@ -4,7 +4,7 @@ import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 
-const slug = decodeSlug(Astro.params.slug);
+const slug = decodeSlug(Astro.params.slug || undefined);
 if (!slug) {
 	return Astro.redirect("/404");
 }
@@ -19,6 +19,21 @@ const { entries: related } = await getEmDashCollection("projects", {
 	orderBy: { published_at: "desc" },
 	limit: 3,
 });
+
+//generate static paths for all published projects
+export const prerender = true;
+export async function getStaticPaths() {
+  const { entries: related } = await getEmDashCollection("projects", {
+    orderBy: { published_at: "desc" },
+	limit: 3,
+    status: "published",
+  });
+
+  return related.map((related) => ({
+    params: { slug: related.data.slug },
+  }));
+}
+
 const otherProjects = related.filter((p) => p.id !== project.id).slice(0, 2);
 
 const gallery = project.data.gallery as
