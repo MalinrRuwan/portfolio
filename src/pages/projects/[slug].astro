@@ -18,14 +18,13 @@ if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 const { entries: related } = await getEmDashCollection("projects", {
 	orderBy: { published_at: "desc" },
 	limit: 3,
+	status: "published",
 });
 
 //generate static paths for all published projects
 export const prerender = true;
 export async function getStaticPaths() {
   const { entries: related } = await getEmDashCollection("projects", {
-    orderBy: { published_at: "desc" },
-	limit: 3,
     status: "published",
   });
 

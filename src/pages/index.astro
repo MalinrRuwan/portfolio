@@ -13,10 +13,12 @@ const [
 ] = await Promise.all([
 	getSiteSettings(),
 	getEmDashCollection("posts", {
+		status: "published",
 		orderBy: { published_at: "desc" },
 		limit: 4,
 	}),
 	getEmDashCollection("projects", {
+		status: "published",
 		orderBy: { published_at: "desc" },
 		limit: 3,
 	}),

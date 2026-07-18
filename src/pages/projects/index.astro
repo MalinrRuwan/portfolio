@@ -6,6 +6,7 @@ import ProjectCard from "../../components/ProjectCard.astro";
 
 const { entries: projects, cacheHint } = await getEmDashCollection("projects", {
 	orderBy: { published_at: "desc" },
+	status: "published"
 });
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 
