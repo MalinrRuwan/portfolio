@@ -5,6 +5,8 @@ import SectionHeader from "../components/SectionHeader.astro";
 import PostRow from "../components/PostRow.astro";
 import ProjectRow from "../components/ProjectRow.astro";
 import { profile } from "../data/profile";
+import Dialog from "@/components/Dialog.astro";
+import { tlwr } from "@/data/tlwr";
 
 const [
 	settings,
@@ -41,7 +43,7 @@ const tagline = settings?.tagline || "";
 					aria-hidden="true"
 					class="inline-block size-1.5 rounded-full bg-ink"
 				></span>
-				Open to opportunities
+				Busy? No I'm just learning
 			</p>
 			<p class="kicker hidden sm:block">{profile.location}</p>
 		</div>
@@ -65,7 +67,15 @@ const tagline = settings?.tagline || "";
 	<section class="pb-24 sm:pb-36">
 		<SectionHeader index="01" label="About" />
 		<div class="reveal max-w-2xl space-y-5 text-lg/8 text-pretty">
-			{profile.about.map((paragraph) => <p>{paragraph}</p>)}
+			{profile.about.map((paragraph) => <p style="display:inline">{paragraph} &nbsp;</p>)}
+			
+				<button
+					onclick="document.getElementById('about-dialog').showModal()"
+					class="u-link cursor-pointer text-sm text-muted hover:text-ink display:inline"
+				>
+					Long version?
+				</button>
+		
 		</div>
 		<a
 			href={profile.resumeUrl}
@@ -162,4 +172,9 @@ const tagline = settings?.tagline || "";
 		</div>
 	</section>
 
+<Dialog id="about-dialog" title="TL;WR">
+	<div class="space-y-4 text-base/7">
+		{tlwr.split('\n\n').map((para) => <p>{para.trim()}</p>)}
+	</div>
+</Dialog>
 </Base>

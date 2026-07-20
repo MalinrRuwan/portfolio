@@ -35,6 +35,7 @@
 	body {
 		@apply bg-bg font-sans text-ink antialiased;
 		text-rendering: optimizeLegibility;
+		line-height: 1.45;
 	}
 
 	::selection {
@@ -113,7 +114,7 @@
  */
 @layer components {
 	.rich-text {
-		@apply text-lg/8 text-pretty;
+		@apply text-lg/7 text-pretty;
 	}
 
 	.rich-text > * + * {

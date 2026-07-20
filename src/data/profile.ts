@@ -22,7 +22,7 @@ export const profile = {
 	location: "Colombo, Sri Lanka",
 
 	about: [
-		"I'm Malin — Splits time between web development, DevOps, and machine learning and electronics. I like tools that are simple, ownable, and well-made. ",
+		"I'm Malin. Splits time between web development, DevOps, and machine learning and electronics. I like tools that are simple, ownable, and well-made. ",
 		"Right now I'm studying, building small projects across the stack, and writing down what I learn along the way.",
 	],
 
