@@ -265,7 +265,7 @@ import { getSeoMeta } from "emdash";
 const seo = getSeoMeta(post, {
 	siteTitle: "My Blog",
 	siteUrl: Astro.url.origin,
-	path: `/posts/${slug}`,
+	path: `/blog/${slug}`,
 	defaultOgImage: featuredImageUrl, // Optional fallback
 });
 

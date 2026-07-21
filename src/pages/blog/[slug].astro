@@ -3,6 +3,8 @@ import { getEmDashEntry, decodeSlug, getEmDashCollection } from "emdash";
 import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import { formatDateLong } from "../../utils/date";
+import { getSiteSetting } from "emdash";
+import { getSeoMeta } from "emdash";
 
 const slug = decodeSlug(Astro.params.slug);
 if (!slug) {
@@ -14,12 +16,21 @@ if (!post) {
 	return Astro.redirect("/404");
 }
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const seo = getSeoMeta(post, {
+	siteTitle: post.data.title,
+	siteUrl: Astro.url.origin,
+	path: `/blog/${slug}`,
+	defaultOgImage: post.data.featured_image?.src,
+});
+
 ---
 
 <Base
 	title={post.data.title}
 	description={post.data.excerpt}
 	type="article"
+	image={seo.ogImage ?? undefined}
 >
 	<article class="pt-20 sm:pt-32">
 		<header class="max-w-3xl">

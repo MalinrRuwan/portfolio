@@ -160,7 +160,7 @@ Navigation menus, managed from the admin UI.
 	"items": [
 		{ "type": "custom", "label": "Home", "url": "/" },
 		{ "type": "custom", "label": "About", "url": "/pages/about" },
-		{ "type": "custom", "label": "Posts", "url": "/posts" }
+		{ "type": "custom", "label": "Blog", "url": "/blog" }
 	]
 }
 ```

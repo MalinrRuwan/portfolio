@@ -168,7 +168,7 @@ When an admin is logged in and views the site, these attributes enable click-to-
 
 ## Common Page Patterns
 
-### List page (e.g., `/posts/index.astro`)
+### List page (e.g., `/blog/index.astro`)
 
 ```astro
 ---
@@ -191,14 +191,14 @@ const sortedPosts = posts.toSorted((a, b) => {
 	{sortedPosts.map(post => (
 		<article>
 			{post.data.featured_image && <Image image={post.data.featured_image} />}
-			<a href={`/posts/${post.id}`}>{post.data.title}</a>
+			<a href={`/blog/${post.id}`}>{post.data.title}</a>
 			{post.data.excerpt && <p>{post.data.excerpt}</p>}
 		</article>
 	))}
 </Base>
 ```
 
-### Detail page (e.g., `/posts/[slug].astro`)
+### Detail page (e.g., `/blog/[slug].astro`)
 
 ```astro
 ---
@@ -217,7 +217,7 @@ Astro.cache.set(cacheHint);
 const seo = getSeoMeta(post, {
 	siteTitle: "My Blog",
 	siteUrl: Astro.url.origin,
-	path: `/posts/${slug}`,
+	path: `/blog/${slug}`,
 });
 
 const tags = await getEntryTerms("posts", post.data.id, "tag");
@@ -259,7 +259,7 @@ const { entries: posts } = await getEmDashCollection("posts", {
 <Base title={`${term.label} posts`}>
 	<h1>{term.label}</h1>
 	{posts.map(post => (
-		<a href={`/posts/${post.id}`}>{post.data.title}</a>
+		<a href={`/blog/${post.id}`}>{post.data.title}</a>
 	))}
 </Base>
 ```
@@ -282,7 +282,7 @@ export const GET: APIRoute = async ({ url }) => {
 	const items = posts
 		.filter((p) => p.data.publishedAt)
 		.map((post) => {
-			const postUrl = `${siteUrl}/posts/${post.id}`;
+			const postUrl = `${siteUrl}/blog/${post.id}`;
 			return `    <item>
       <title>${escapeXml(post.data.title)}</title>
       <link>${postUrl}</link>
@@ -346,7 +346,7 @@ When a collection has no content, show a helpful empty state:
 	<section>
 		<h2>No posts yet</h2>
 		<p>Create your first post in the admin panel.</p>
-		<a href="/_emdash/admin/content/posts/new">Create a post</a>
+		<a href="/_emdash/admin/content/blog/new">Create a post</a>
 	</section>
 ) : (
 	/* ... render posts ... */
@@ -368,7 +368,7 @@ const { entries, nextCursor, cacheHint } = await getEmDashCollection("posts", {
 Astro.cache.set(cacheHint);
 ---
 {entries.map(post => (
-	<a href={`/posts/${post.id}`}>{post.data.title}</a>
+	<a href={`/blog/${post.id}`}>{post.data.title}</a>
 ))}
 {nextCursor && <a href={`?cursor=${nextCursor}`}>Next page</a>}
 ```
