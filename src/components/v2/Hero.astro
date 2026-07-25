@@ -1,0 +1,53 @@
+---
+import { profile } from "../../data/profile";
+
+interface Props {
+	tagline: string;
+}
+const { tagline } = Astro.props;
+---
+
+<section class="v2-scene scene-paper v2-hero" aria-label="Malin Dhamsara — introduction" data-v2-hero>
+	<div class="hero-stage">
+		<div class="hero-meta">
+			<p class="kicker hero-meta-item">
+				<span class="rev"><span class="rev-in">Web developer &middot; Electronics enthusiast &middot; ML enthusiast</span></span>
+			</p>
+			<p class="kicker hero-meta-item hero-meta-r">
+				<span class="rev"><span class="rev-in">{profile.location} &mdash; Open to opportunities</span></span>
+			</p>
+		</div>
+
+		<h1 class="hero-type">
+			<span class="hero-malin" data-v2-malin>
+				<span class="hero-m" data-v2-hero-m>M</span><span class="hero-alin" data-v2-alin>ALIN</span>
+			</span>
+			<span class="hero-dhamsara" data-v2-dhamsara>DHAMSARA</span>
+		</h1>
+
+		<div class="hero-foot">
+			<p class="hero-tagline" data-v2-tagline>{tagline}</p>
+			<p class="kicker hero-scroll" data-v2-scrollcue>
+				Scroll to enter
+				<span class="hero-scroll-line" aria-hidden="true"></span>
+			</p>
+		</div>
+	</div>
+
+	{/* Portal — film only. The letterform M resolves into the mark, becomes
+	    a mask of drifting hairline grids, and the camera passes between its
+	    strokes. */}
+	<div class="portal film" aria-hidden="true" data-v2-portal>
+		<div class="portal-inner" data-v2-portal-inner>
+			<div class="p-stroke ps-wing-l">
+				<div class="p-grid-scale"><div class="p-grid"></div></div>
+			</div>
+			<div class="p-stroke ps-core">
+				<div class="p-grid-scale"><div class="p-grid"></div></div>
+			</div>
+			<div class="p-stroke ps-wing-r">
+				<div class="p-grid-scale"><div class="p-grid"></div></div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,37 @@
+---
+import V2Logo from "./V2Logo.astro";
+---
+
+<header class="v2-nav" data-theme="paper" data-v2-nav>
+	<a href="/" class="v2-nav-logo" aria-label="Malin Dhamsara — home">
+		<V2Logo class="v2logo h-6 w-auto" />
+	</a>
+
+	<nav class="v2-nav-links" aria-label="Film scenes">
+		<a href="#v2-practice" data-v2-anchor="v2-practice">
+			<span class="v2-nav-num">01</span>
+			<span class="v2-nav-label">Practice</span>
+		</a>
+		<a href="#v2-work" data-v2-anchor="v2-work">
+			<span class="v2-nav-num">02</span>
+			<span class="v2-nav-label">Work</span>
+		</a>
+		<a href="#v2-index" data-v2-anchor="v2-index">
+			<span class="v2-nav-num">03</span>
+			<span class="v2-nav-label">Index</span>
+		</a>
+		<a href="#v2-contact" data-v2-anchor="v2-contact">
+			<span class="v2-nav-num">04</span>
+			<span class="v2-nav-label">Contact</span>
+		</a>
+	</nav>
+
+	<a href="/contact" class="v2-nav-cta">
+		<span class="v2-nav-cta-label">Get in touch</span>
+		<span class="v2-nav-cta-arrow" aria-hidden="true">&#8599;</span>
+	</a>
+
+	<div class="v2-nav-rail" aria-hidden="true">
+		<span class="v2-nav-progress" data-v2-progress></span>
+	</div>
+</header>

@@ -1,9 +1,8 @@
 ---
-import { getEmDashEntry, decodeSlug, getEmDashCollection } from "emdash";
+import { getEmDashEntry, decodeSlug } from "emdash";
 import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import { formatDateLong } from "../../utils/date";
-import { getSiteSetting } from "emdash";
 import { getSeoMeta } from "emdash";
 
 const slug = decodeSlug(Astro.params.slug);

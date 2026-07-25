@@ -1,0 +1,74 @@
+---
+import type { Discipline } from "./types";
+
+interface Props {
+	disciplines: Discipline[];
+}
+const { disciplines } = Astro.props;
+---
+
+<section
+	class="v2-scene scene-ink v2-disc"
+	id="v2-work"
+	aria-label="Three disciplines — one practice"
+	data-v2-disc
+>
+	<p class="kicker disc-kicker" data-v2-disc-kicker>
+		Three disciplines &mdash; one practice
+	</p>
+
+	{/* Numerals are the architecture. The 0 begins viewport-sized, docks
+	    left, and the units digits 1 → 2 → 3 cycle through the slot beside
+	    it: 0 → 01 → 02 → 03. */}
+	<div class="disc-stage">
+		<p class="disc-zero" data-v2-disc-zero aria-hidden="true">0</p>
+		{
+			disciplines.map((d, i) => (
+				<p class="disc-unit" data-v2-disc-unit={i} aria-hidden="true">
+					{d.num.slice(-1)}
+				</p>
+			))
+		}
+
+		{/* Screen-reader friendly list of the numerals */}
+		<p class="sr-only">0, 01, 02, 03</p>
+
+		{
+			disciplines.map((d, i) => (
+				<div class="disc-panel" data-v2-disc-panel={i}>
+					<p class="disc-label" data-v2-disc-label>
+						<span class="tabular-nums">{d.num}</span> {d.name} &mdash; {d.label}
+					</p>
+					<ul class="disc-frags">
+						{d.projects.map((p) => (
+							<li class="frag">
+								<a href={p.href} class="frag-title u-link">
+									{p.title}
+								</a>
+								{p.year && (
+									<span class="frag-meta tabular-nums">{p.year}</span>
+								)}
+							</li>
+						))}
+						{d.projects[0]?.summary && (
+							<li class="frag-sum">{d.projects[0].summary}</li>
+						)}
+						{d.post && (
+							<li class="frag">
+								<span class="frag-meta">Writing</span>
+								<a href={d.post.href} class="frag-title u-link">
+									{d.post.title}
+								</a>
+							</li>
+						)}
+					</ul>
+				</div>
+			))
+		}
+	</div>
+
+	{/* The final 3 enlarges into a paper mask revealing scene 04 */}
+	<div class="three-reveal film" aria-hidden="true" data-v2-three-reveal>
+		<span>3</span>
+	</div>
+</section>

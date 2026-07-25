@@ -1,0 +1,63 @@
+---
+import { M_VIEWBOX, M_PATH_WING_L, M_PATH_WING_R, M_PATH_CORE } from "./mGeometry";
+---
+
+<section class="v2-scene scene-paper v2-inside" aria-label="Inside the M" data-v2-inside>
+	{/* Paper grain — CSS-only SVG noise, no image assets */}
+	<div class="grain film" aria-hidden="true"></div>
+
+	{/* Sheared parallelogram planes at controlled depths (logo geometry) */}
+	<div class="planes film" aria-hidden="true" data-v2-planes>
+		<div class="plane plane-1"></div>
+		<div class="plane plane-2"></div>
+		<div class="plane plane-3"></div>
+		<div class="plane plane-4"></div>
+		<div class="plane plane-5"></div>
+	</div>
+
+	{/* Cropped M-stroke fragment, faint */}
+	<svg
+		class="mfrag film"
+		viewBox={M_VIEWBOX}
+		fill="none"
+		aria-hidden="true"
+		data-v2-mfrag
+	>
+		<path d={M_PATH_WING_L}></path>
+		<path d={M_PATH_WING_R}></path>
+		<path d={M_PATH_CORE}></path>
+	</svg>
+
+	{/* Measurement rules + coordinates */}
+	<div class="measures film" aria-hidden="true">
+		<div class="measure measure-lat">
+			<span class="measure-line"></span>
+			<span class="measure-label tabular-nums">6.9271&deg; N</span>
+		</div>
+		<div class="measure measure-lng">
+			<span class="measure-line"></span>
+			<span class="measure-label tabular-nums">79.8612&deg; E</span>
+		</div>
+	</div>
+
+	<div class="inside-stack">
+		<p class="kicker inside-kicker" data-v2-inside-kicker>
+			Inside the M &mdash; <span class="tabular-nums">6.9271&deg; N / 79.8612&deg; E</span>
+		</p>
+		<p class="stack-line" data-v2-stack-line>
+			<span class="rev"><span class="rev-in">WEB</span></span>
+		</p>
+		<p class="stack-line stack-line-r" data-v2-stack-line>
+			<span class="rev"><span class="rev-in">DEVOPS</span></span>
+		</p>
+		<p class="stack-line" data-v2-stack-line>
+			<span class="rev"><span class="rev-in">ML &amp;</span></span>
+		</p>
+		<p class="stack-line stack-line-r" data-v2-stack-line>
+			<span class="rev"><span class="rev-in">ELECTRONICS</span></span>
+		</p>
+	</div>
+
+	{/* The core stroke that rotates into a horizontal hairline → scene 03 */}
+	<div class="core-bar film" aria-hidden="true" data-v2-core-bar></div>
+</section>

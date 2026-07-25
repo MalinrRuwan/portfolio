@@ -1,0 +1,42 @@
+---
+import { M_VIEWBOX, M_PATH_WING_L, M_PATH_WING_R, M_PATH_CORE } from "./mGeometry";
+---
+
+<section class="v2-scene scene-ink v2-climax" aria-label="Climax" data-v2-climax>
+	{/* Continuity: scene 05's compressed hairline rests here on the ink */}
+	<div class="climax-baseline film" aria-hidden="true" data-v2-climax-baseline></div>
+
+	{/* The camera begins inside the counter of this giant M */}
+	<svg
+		class="climax-m film"
+		viewBox={M_VIEWBOX}
+		fill="none"
+		aria-hidden="true"
+		data-v2-climax-m
+	>
+		<path d={M_PATH_WING_L}></path>
+		<path d={M_PATH_WING_R}></path>
+		<path d={M_PATH_CORE}></path>
+	</svg>
+
+	<div class="climax-center">
+		<div class="climax-lock" data-v2-climax-lock>
+			<div class="climax-grid film" aria-hidden="true" data-v2-climax-grid>
+				<span class="cg cg-1"></span>
+				<span class="cg cg-2"></span>
+				<span class="cg cg-3"></span>
+				<span class="cg cg-4"></span>
+			</div>
+			<div class="climax-words" data-v2-climax-words>
+				<p class="cl-line">TOOLS THAT ARE</p>
+				<p class="cl-line">SIMPLE, OWNABLE,</p>
+				<p class="cl-line">WELL-MADE.</p>
+			</div>
+		</div>
+		<p class="climax-aside" data-v2-climax-aside>
+			built to be owned, not rented.
+		</p>
+	</div>
+
+	<p class="climax-name" data-v2-climax-name>MALIN DHAMSARA</p>
+</section>

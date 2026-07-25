@@ -1,0 +1,54 @@
+---
+import { profile } from "../../data/profile";
+import V2Logo from "./V2Logo.astro";
+
+interface Props {
+	name: string;
+}
+const { name } = Astro.props;
+
+const rows: { term: string; desc: string; href?: string }[] = [
+	{ term: "Name", desc: name },
+	{ term: "Location", desc: profile.location },
+	{ term: "Focus", desc: "Web / Systems / Hardware & ML" },
+	{ term: "Education", desc: profile.education[0].title },
+	{ term: "Writing", desc: "/blog", href: "/blog" },
+	{ term: "Status", desc: "Open to opportunities" },
+];
+---
+
+<section
+	class="v2-scene scene-paper v2-index"
+	id="v2-index"
+	aria-label="Index — specification"
+	data-v2-index
+>
+	<div class="index-m film" aria-hidden="true" data-v2-index-m>
+		<V2Logo class="v2logo index-logo" />
+	</div>
+
+	<dl class="index-rows" data-v2-index-rows>
+		{
+			rows.map((row) => (
+				<div class="index-row" data-v2-index-row>
+					<dt class="index-term">{row.term}</dt>
+					<dd class="index-desc">
+						{row.href ? (
+							<a href={row.href} class="u-link">
+								{row.desc}
+							</a>
+						) : (
+							row.desc
+						)}
+					</dd>
+					<div class="row-invert film" aria-hidden="true">
+						<span class="inv-term">{row.term}</span>
+						<span class="inv-desc">{row.desc}</span>
+					</div>
+				</div>
+			))
+		}
+	</dl>
+
+	<div class="index-baseline film" aria-hidden="true" data-v2-index-baseline></div>
+</section>

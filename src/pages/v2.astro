@@ -1,0 +1,97 @@
+---
+import { getEmDashCollection, getSiteSettings } from "emdash";
+import V2Shell from "../layouts/V2Shell.astro";
+import V2Nav from "../components/v2/V2Nav.astro";
+import Loader from "../components/v2/Loader.astro";
+import Hero from "../components/v2/Hero.astro";
+import InsideM from "../components/v2/InsideM.astro";
+import Disciplines from "../components/v2/Disciplines.astro";
+import Practice from "../components/v2/Practice.astro";
+import MIndex from "../components/v2/MIndex.astro";
+import Climax from "../components/v2/Climax.astro";
+import FinalCTA from "../components/v2/FinalCTA.astro";
+import type { Discipline } from "../components/v2/types";
+
+const [
+	settings,
+	{ entries: posts, cacheHint: postsCacheHint },
+	{ entries: projects, cacheHint: projectsCacheHint },
+] = await Promise.all([
+	getSiteSettings(),
+	getEmDashCollection("posts", {
+		status: "published",
+		orderBy: { published_at: "desc" },
+		limit: 10,
+	}),
+	getEmDashCollection("projects", {
+		status: "published",
+		orderBy: { published_at: "desc" },
+		limit: 10,
+	}),
+]);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(postsCacheHint);
+	Astro.cache.set(projectsCacheHint);
+}
+
+const name = settings?.title || "Malin Dhamsara";
+const tagline = settings?.tagline || "";
+
+/*
+ * Art-directed distribution of live CMS work across the three
+ * disciplines. Known slugs land in their intended scene; anything new or
+ * renamed falls back to round-robin so the scene never renders empty.
+ */
+const DISC_BY_SLUG: Record<string, number> = {
+	"portfolio-cms": 0,
+	"task-cli": 1,
+	"line-follower": 2,
+	"digit-classifier": 2,
+};
+
+const buckets: (typeof projects)[] = [[], [], []];
+projects.forEach((project, i) => {
+	buckets[DISC_BY_SLUG[project.id] ?? i % 3].push(project);
+});
+
+const DISC_DEFS = [
+	{ num: "01", name: "WEB", label: "INTERFACES & TOOLS" },
+	{ num: "02", name: "SYSTEMS", label: "PLAIN TEXT, OWNED INFRASTRUCTURE" },
+	{ num: "03", name: "HARDWARE & ML", label: "FROM SENSORS TO SOFTWARE" },
+];
+
+const disciplines: Discipline[] = DISC_DEFS.map((def, i) => ({
+	...def,
+	projects: buckets[i].map((p) => ({
+		title: p.data.title ?? "Untitled",
+		year: p.data.year,
+		href: `/projects/${p.id}`,
+		summary: p.data.summary,
+	})),
+	post: posts[i]
+		? {
+				title: posts[i].data.title ?? "Untitled",
+				href: `/blog/${posts[i].id}`,
+			}
+		: undefined,
+}));
+---
+
+<V2Shell title="Enter the M" description={tagline}>
+	<Loader />
+	<V2Nav />
+
+	<main id="main" data-v2>
+		<Hero tagline={tagline} />
+		<InsideM />
+		<Disciplines disciplines={disciplines} />
+		<Practice />
+		<MIndex name={name} />
+		<Climax />
+		<FinalCTA name={name} />
+	</main>
+
+	<script>
+		import "../scripts/v2";
+	</script>
+</V2Shell>

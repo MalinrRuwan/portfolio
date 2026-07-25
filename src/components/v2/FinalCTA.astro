@@ -1,0 +1,63 @@
+---
+import { profile } from "../../data/profile";
+import V2Logo from "./V2Logo.astro";
+
+interface Props {
+	name: string;
+}
+const { name } = Astro.props;
+
+const github = profile.socials.find((s) => s.label === "GitHub");
+const githubDisplay = github?.url.replace(/^https?:\/\//, "") ?? "";
+---
+
+<section
+	class="v2-scene scene-paper v2-final"
+	id="v2-contact"
+	aria-label="Contact"
+	data-v2-final
+>
+	<div class="final-inner">
+		<p class="final-name" data-v2-final-name>{name}</p>
+
+		<p class="kicker final-status">
+			<span class="final-dot" aria-hidden="true"></span>
+			Open to opportunities
+		</p>
+
+		<p class="final-about">{profile.about[1]}</p>
+
+		<p class="final-cta-row">
+			<a href="/contact" class="v2-cta" data-v2-cta>
+				<span class="v2-cta-bg" aria-hidden="true"></span>
+				<span class="v2-cta-label">Get in touch</span>
+				<span class="v2-cta-arrow" aria-hidden="true">&#8599;</span>
+			</a>
+		</p>
+
+		<p class="final-links">
+			<a href="/projects" class="u-link">/projects</a>
+			<span aria-hidden="true"> &middot; </span>
+			<a href="/blog" class="u-link">/blog</a>
+			<span aria-hidden="true"> &middot; </span>
+			<a href={profile.resumeUrl} class="u-link">r&eacute;sum&eacute;</a>
+		</p>
+
+		<p class="final-tech">
+			<a href={`mailto:${profile.email}`} class="u-link">{profile.email}</a>
+			{github && (
+				<>
+					<span aria-hidden="true"> &middot; </span>
+					<a href={github.url} target="_blank" rel="noopener noreferrer" class="u-link">
+						{githubDisplay}
+					</a>
+				</>
+			)}
+		</p>
+	</div>
+
+	{/* Huge cropped M in faint ink, mostly below the viewport edge */}
+	<div class="final-m" aria-hidden="true">
+		<V2Logo class="v2logo final-logo" />
+	</div>
+</section>

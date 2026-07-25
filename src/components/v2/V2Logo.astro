@@ -1,0 +1,30 @@
+---
+import {
+	M_VIEWBOX,
+	M_PATH_WING_L,
+	M_PATH_WING_R,
+	M_PATH_CORE,
+} from "./mGeometry";
+
+interface Props {
+	class?: string;
+}
+const { class: className = "v2logo" } = Astro.props;
+---
+
+{/*
+ * v2 logomark — same geometry as SiteLogo, but driven by --v2-logo-fg /
+ * --v2-logo-bg CSS vars so it hard-swaps with the film's theme cuts.
+ */}
+<svg
+	class={className}
+	viewBox={M_VIEWBOX}
+	fill="none"
+	xmlns="http://www.w3.org/2000/svg"
+	shape-rendering="geometricPrecision"
+	aria-hidden="true"
+>
+	<path class="v2logo-wing" d={M_PATH_WING_L} stroke-width="8"></path>
+	<path class="v2logo-wing" d={M_PATH_WING_R} stroke-width="8"></path>
+	<path class="v2logo-core" d={M_PATH_CORE} stroke-width="8"></path>
+</svg>
