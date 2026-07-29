@@ -8,6 +8,7 @@
         "@astrojs/cloudflare": "^14.1.4",
         "@astrojs/react": "^6.0.1",
         "@emdash-cms/cloudflare": "^0.31.1",
+        "@portfolio/emdash-callout": "workspace:*",
         "@tailwindcss/vite": "^4.3.3",
         "astro": "^7.1.3",
         "emdash": "^0.31.1",
@@ -18,6 +19,14 @@
       },
       "devDependencies": {
         "@astrojs/check": "^0.9.9",
+        "typescript": "^6.0.0",
+      },
+    },
+    "plugins/emdash-callout": {
+      "name": "@portfolio/emdash-callout",
+      "version": "0.1.0",
+      "peerDependencies": {
+        "emdash": "^0.31.1",
       },
     },
   },
@@ -415,6 +424,8 @@
     "@portabletext/toolkit": ["@portabletext/toolkit@5.0.2", "", { "dependencies": { "@portabletext/types": "^4.0.2" } }, "sha512-Njc1LE1PMJkTx/wEPqZ6sOWGgFgX2B47fxpOQ/Ia4ByhsZoA5Sq8dNvvV5F052j/xE8TbOLiBEjS848FkKADDQ=="],
 
     "@portabletext/types": ["@portabletext/types@4.0.2", "", {}, "sha512-djfIGU9n6DRrunlvj2nIDAp17URo/nA4jSXGvf+Gupx8NLLy9fmJBZ3GL8yhqn9lSVc+cKCharjOa3aOBnWbRw=="],
+
+    "@portfolio/emdash-callout": ["@portfolio/emdash-callout@workspace:plugins/emdash-callout"],
 
     "@rolldown/binding-android-arm64": ["@rolldown/binding-android-arm64@1.1.5", "", { "os": "android", "cpu": "arm64" }, "sha512-lZg8fqIv2v7FF237bwMgzGZEJvGL79/s5knJ/i6FmsGF4XXlzccZ4jb+TrFIxtSSxFtIpdsgrPZeMk1I9AFcyQ=="],
 

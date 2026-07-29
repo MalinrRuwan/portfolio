@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { d1, r2, cloudflareImages } from "@emdash-cms/cloudflare";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "emdash/astro";
+import { calloutPlugin } from "@portfolio/emdash-callout";
 
 export default defineConfig({
   output: "server",
@@ -26,6 +27,7 @@ export default defineConfig({
           apiToken: import.meta.env.CF_IMAGES_TOKEN,
         }),
       ],
+      plugins: [calloutPlugin()],
     }),
   ],
   fonts: [
