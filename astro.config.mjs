@@ -21,6 +21,7 @@ export default defineConfig({
     emdash({
       database: d1({ binding: "DB", session: "auto" }),
       storage: r2({ binding: "MEDIA" }),
+      objectCache: kvCache({ binding: "CACHE" }),
       mediaProviders: [
         cloudflareImages({
           accountId: import.meta.env.CF_ACCOUNT_ID,
