@@ -74,6 +74,22 @@ const year = new Date().getFullYear();
 		<script is:inline>
 			document.documentElement.classList.remove("no-js");
 		</script>
+
+		<script type="speculationrules">
+		{
+  "prefetch": [
+    {
+      "source": "document",
+      "eagerness": "moderate",
+      "where": {
+        "and": [
+          { "href_matches": "/*", "relative_to": "document" }
+        ]
+      }
+    }
+  ]
+		}
+		</script>
 	</head>
 	<body class="flex min-h-screen flex-col">
 		<a
