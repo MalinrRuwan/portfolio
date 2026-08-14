@@ -21,10 +21,16 @@ type Env = {
 	IMAGES: ImagesBinding;
 };
 
+type ExecutionContextLike = {
+	waitUntil: (promise: Promise<unknown>) => void;
+};
+
+const edgeCache = (caches as CacheStorage & { default: Cache }).default;
+
 async function serveOgImage(
 	request: Request,
 	env: Env,
-	ctx: ExecutionContext,
+	ctx: ExecutionContextLike,
 ): Promise<Response> {
 	const url = new URL(request.url);
 	const source = url.searchParams.get("source");
@@ -67,18 +73,18 @@ async function serveOgImage(
 		status: response.status,
 		headers,
 	});
-	ctx.waitUntil(caches.default.put(request, cachedResponse.clone()));
+	ctx.waitUntil(edgeCache.put(request, cachedResponse.clone()));
 
 	return cachedResponse;
 }
 
 export default {
 	...emdashWorker,
-	async fetch(request, env: Env, ctx) {
+	async fetch(request: Request, env: Env, ctx: ExecutionContextLike) {
 		const url = new URL(request.url);
 
 		if (url.pathname === OG_IMAGE_PATH) {
-			const cached = await caches.default.match(request);
+			const cached = await edgeCache.match(request);
 			if (cached) {
 				return cached;
 			}

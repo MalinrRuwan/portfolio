@@ -8,6 +8,7 @@ import { d1, r2, cloudflareImages, kvCache } from "@emdash-cms/cloudflare";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "emdash/astro";
 import { calloutPlugin } from "@portfolio/emdash-callout";
+import { statusImagesPlugin } from "@portfolio/emdash-status-images";
 
 const emdashEntry = fileURLToPath(import.meta.resolve("emdash"));
 const emdashAdminDirectory = realpathSync(
@@ -41,7 +42,7 @@ export default defineConfig({
           apiToken: import.meta.env.CF_IMAGES_TOKEN,
         }),
       ],
-      plugins: [calloutPlugin()],
+      plugins: [calloutPlugin(), statusImagesPlugin()],
     }),
   ],
   fonts: [

@@ -9,6 +9,7 @@
         "@astrojs/react": "^6.0.1",
         "@emdash-cms/cloudflare": "^0.32.0",
         "@portfolio/emdash-callout": "workspace:*",
+        "@portfolio/emdash-status-images": "workspace:*",
         "@tailwindcss/vite": "^4.3.3",
         "astro": "^7.2.0",
         "emdash": "^0.32.0",
@@ -19,6 +20,8 @@
       },
       "devDependencies": {
         "@astrojs/check": "^0.9.9",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.4",
         "typescript": "^6.0.0",
       },
     },
@@ -27,6 +30,15 @@
       "version": "0.1.0",
       "peerDependencies": {
         "emdash": "^0.31.1",
+      },
+    },
+    "plugins/emdash-status-images": {
+      "name": "@portfolio/emdash-status-images",
+      "version": "0.1.0",
+      "peerDependencies": {
+        "@emdash-cms/admin": "^0.32.0",
+        "emdash": "^0.32.0",
+        "react": "^19.0.0",
       },
     },
   },
@@ -429,6 +441,8 @@
 
     "@portfolio/emdash-callout": ["@portfolio/emdash-callout@workspace:plugins/emdash-callout"],
 
+    "@portfolio/emdash-status-images": ["@portfolio/emdash-status-images@workspace:plugins/emdash-status-images"],
+
     "@rolldown/binding-android-arm64": ["@rolldown/binding-android-arm64@1.1.5", "", { "os": "android", "cpu": "arm64" }, "sha512-lZg8fqIv2v7FF237bwMgzGZEJvGL79/s5knJ/i6FmsGF4XXlzccZ4jb+TrFIxtSSxFtIpdsgrPZeMk1I9AFcyQ=="],
 
     "@rolldown/binding-darwin-arm64": ["@rolldown/binding-darwin-arm64@1.1.5", "", { "os": "darwin", "cpu": "arm64" }, "sha512-51Bnx9pNiMRKSUNtBfySkNJ9vMU9Hh3I1ozDd6gyPPYzaXCfnptUcEZxXGYFn+ul2dtcMUiqGR1Yai2K10uoTw=="],
@@ -645,7 +659,7 @@
 
     "@types/react": ["@types/react@19.2.17", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw=="],
 
-    "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
+    "@types/react-dom": ["@types/react-dom@19.2.4", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-Bsc+QHgp+P/F02XDzNCY9jnZNCUuLki36KT7VKrTXXLdHf+vHMNZnW1rVu5DNW/rCK+fya3DATySbLM4yhtKUw=="],
 
     "@types/trusted-types": ["@types/trusted-types@2.0.7", "", {}, "sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw=="],
 

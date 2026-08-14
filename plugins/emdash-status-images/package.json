@@ -1,0 +1,15 @@
+{
+  "name": "@portfolio/emdash-status-images",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./admin": "./src/admin.tsx"
+  },
+  "peerDependencies": {
+    "@emdash-cms/admin": "^0.32.0",
+    "emdash": "^0.32.0",
+    "react": "^19.0.0"
+  }
+}
