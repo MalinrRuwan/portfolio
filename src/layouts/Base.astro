@@ -24,6 +24,9 @@ const siteDescription = settings?.tagline || "";
 const ogImage =
 	image ??
 	getOgImageUrl(settings?.seo?.defaultOgImage?.url, Astro.url.origin);
+const ogImageAlt = title
+	? `Social preview for ${title}`
+	: `Social preview for ${siteTitle}`;
 
 const menu = await getMenu("primary");
 const pathname = Astro.url.pathname;
@@ -58,6 +61,29 @@ const year = new Date().getFullYear();
 		/>
 		<title>{fullTitle}</title>
 		<EmDashHead page={pageCtx} />
+		<meta property="og:locale" content="en_US" />
+		{
+			ogImage && (
+				<>
+					<meta property="og:image:width" content="1200" />
+					<meta property="og:image:height" content="630" />
+					<meta property="og:image:alt" content={ogImageAlt} />
+					<meta name="twitter:image:alt" content={ogImageAlt} />
+				</>
+			)
+		}
+		<meta name="twitter:site" content="@malindhamsara" />
+		<meta name="twitter:creator" content="@malindhamsara" />
+		<meta
+			name="theme-color"
+			content="#fdfcfa"
+			media="(prefers-color-scheme: light)"
+		/>
+		<meta
+			name="theme-color"
+			content="#131110"
+			media="(prefers-color-scheme: dark)"
+		/>
 		<Font cssVariable="--font-inter" preload />
 		<Font cssVariable="--font-crimson" preload />
 		<link
@@ -75,6 +101,7 @@ const year = new Date().getFullYear();
 		</script>
 		<link rel="icon" href="/favicon.ico" sizes="48x48" type="image/x-icon" />
 				<link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 		<script is:inline>
 			document.documentElement.classList.remove("no-js");
 		</script>

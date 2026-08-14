@@ -8,6 +8,219 @@ const MUTED = "#706e67";
 const RULE = "#d6d1c7";
 const PAGE_SIZE = 3;
 
+const STATUS_IMAGES_CSS = `
+	.status-images {
+		box-sizing: border-box;
+		max-width: 1180px;
+		margin: 0 auto;
+		padding: 12px 0 40px;
+		color: ${INK};
+	}
+
+	.status-images *,
+	.status-images *::before,
+	.status-images *::after {
+		box-sizing: border-box;
+	}
+
+	.status-images__header {
+		margin-bottom: 28px;
+	}
+
+	.status-images__layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
+		gap: 32px;
+		align-items: start;
+	}
+
+	.status-images__section {
+		margin-top: 28px;
+	}
+
+	.status-images__section-header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 12px;
+	}
+
+	.status-images__pagination {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		white-space: nowrap;
+	}
+
+	.status-images__pagination button {
+		min-height: 36px;
+		padding: 7px 10px;
+		border: 1px solid ${RULE};
+		background: ${PAPER};
+		color: ${INK};
+		cursor: pointer;
+		font: inherit;
+	}
+
+	.status-images__pagination button:disabled {
+		cursor: not-allowed;
+		opacity: 0.45;
+	}
+
+	.status-images__entry-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+		gap: 12px;
+	}
+
+	.status-images__entry-card {
+		min-width: 0;
+		appearance: none;
+		cursor: pointer;
+		text-align: left;
+		padding: 0;
+		overflow: hidden;
+		border: 2px solid ${RULE};
+		background: ${PAPER};
+	}
+
+	.status-images__entry-card[aria-pressed="true"] {
+		border-color: ${INK};
+	}
+
+	.status-images__entry-image {
+		position: relative;
+		display: grid;
+		place-items: center;
+		height: 128px;
+		overflow: hidden;
+		background: #e5e1d8;
+	}
+
+	.status-images__entry-copy {
+		padding: 12px;
+	}
+
+	.status-images__entry-title {
+		display: -webkit-box;
+		margin: 0;
+		overflow: hidden;
+		color: ${INK};
+		font-weight: 700;
+		line-height: 1.35;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+
+	.status-images__preview {
+		width: min(100%, 390px);
+	}
+
+	.status-images__preview-frame {
+		overflow: hidden;
+		border: 1px solid ${RULE};
+		background: ${PAPER};
+		box-shadow: 0 12px 30px rgba(23, 23, 22, 0.12);
+	}
+
+	.status-images__preview-canvas {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 9 / 16;
+	}
+
+	.status-images__download {
+		width: 100%;
+		min-height: 48px;
+		margin-top: 14px;
+		padding: 13px 16px;
+		cursor: pointer;
+		border: 1px solid ${INK};
+		background: ${INK};
+		color: ${PAPER};
+		font-weight: 700;
+	}
+
+	.status-images__download:disabled {
+		cursor: not-allowed;
+		opacity: 0.55;
+	}
+
+	@media (max-width: 760px) {
+		.status-images {
+			padding: 4px 16px 32px;
+		}
+
+		.status-images__header {
+			margin-bottom: 24px;
+		}
+
+		.status-images__header h1 {
+			font-size: clamp(26px, 8vw, 32px) !important;
+			line-height: 1.08;
+		}
+
+		.status-images__layout {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 28px;
+		}
+
+		.status-images__preview {
+			width: min(100%, 340px);
+			margin: 0 auto;
+		}
+
+		.status-images__section-header {
+			align-items: flex-start;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.status-images__pagination {
+			width: 100%;
+			justify-content: space-between;
+		}
+
+		.status-images__pagination button {
+			min-height: 44px;
+			padding: 10px 14px;
+		}
+
+		.status-images__entry-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 10px;
+		}
+
+		.status-images__entry-image {
+			height: 104px;
+		}
+
+		.status-images__entry-copy {
+			padding: 10px;
+		}
+
+		.status-images__search {
+			font-size: 16px;
+		}
+	}
+
+	@media (max-width: 360px) {
+		.status-images {
+			padding-inline: 12px;
+		}
+
+		.status-images__entry-grid {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.status-images__entry-image {
+			height: 132px;
+		}
+	}
+`;
+
 type StatusImageEntry = {
 	id: string;
 	collection: "projects" | "posts";
@@ -255,21 +468,13 @@ function EntrySection({ title, entries, selected, onSelect }: EntrySectionProps)
 	}, [page, pageCount]);
 
 	return (
-		<section style={{ marginTop: 28 }}>
-			<div
-				style={{
-					display: "flex",
-					alignItems: "baseline",
-					justifyContent: "space-between",
-					gap: 16,
-					marginBottom: 12,
-				}}
-			>
+		<section className="status-images__section">
+			<div className="status-images__section-header">
 				<h3 style={{ color: INK, fontSize: 16, margin: 0 }}>
 					{title} <span style={{ color: MUTED, fontWeight: 400 }}>({entries.length})</span>
 				</h3>
 				{entries.length > PAGE_SIZE && (
-					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+					<div className="status-images__pagination">
 						<button
 							type="button"
 							onClick={() => setPage((value) => Math.max(0, value - 1))}
@@ -296,13 +501,7 @@ function EntrySection({ title, entries, selected, onSelect }: EntrySectionProps)
 			{entries.length === 0 ? (
 				<p style={{ color: MUTED, margin: 0 }}>No matching {title.toLowerCase()}.</p>
 			) : (
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))",
-						gap: 12,
-					}}
-				>
+				<div className="status-images__entry-grid">
 					{visibleEntries.map((entry) => {
 						const isSelected = selected?.id === entry.id && selected.collection === entry.collection;
 						return (
@@ -311,26 +510,9 @@ function EntrySection({ title, entries, selected, onSelect }: EntrySectionProps)
 								type="button"
 								onClick={() => onSelect(entry)}
 								aria-pressed={isSelected}
-								style={{
-									appearance: "none",
-									cursor: "pointer",
-									textAlign: "left",
-									padding: 0,
-									overflow: "hidden",
-									border: `2px solid ${isSelected ? INK : RULE}`,
-									background: PAPER,
-								}}
+								className="status-images__entry-card"
 							>
-								<div
-									style={{
-										position: "relative",
-										display: "grid",
-										placeItems: "center",
-										height: 128,
-										overflow: "hidden",
-										background: "#e5e1d8",
-									}}
-								>
+								<div className="status-images__entry-image">
 									{entry.featuredImage ? (
 										<img
 											src={entry.featuredImage}
@@ -351,7 +533,7 @@ function EntrySection({ title, entries, selected, onSelect }: EntrySectionProps)
 										</span>
 									)}
 								</div>
-								<div style={{ padding: 12 }}>
+								<div className="status-images__entry-copy">
 									<p
 										style={{
 											margin: "0 0 6px",
@@ -363,7 +545,7 @@ function EntrySection({ title, entries, selected, onSelect }: EntrySectionProps)
 									>
 										{entry.status.toUpperCase()}
 									</p>
-									<p style={{ margin: 0, color: INK, fontWeight: 700 }}>{entry.title}</p>
+									<p className="status-images__entry-title">{entry.title}</p>
 								</div>
 							</button>
 						);
@@ -466,8 +648,9 @@ export function StatusImagesPage() {
 	const posts = visibleEntries.filter((entry) => entry.collection === "posts");
 
 	return (
-		<section style={{ maxWidth: 1180, margin: "0 auto", padding: "12px 0 40px" }}>
-			<header style={{ marginBottom: 28 }}>
+		<section className="status-images">
+			<style>{STATUS_IMAGES_CSS}</style>
+			<header className="status-images__header">
 				<p
 					style={{
 						margin: "0 0 8px",
@@ -503,12 +686,7 @@ export function StatusImagesPage() {
 			)}
 
 			<div
-				style={{
-					display: "grid",
-					gridTemplateColumns: "minmax(0, 1fr) minmax(280px, 390px)",
-					gap: 32,
-					alignItems: "start",
-				}}
+				className="status-images__layout"
 			>
 				<div>
 					<h2 style={{ color: INK, fontSize: 16, margin: "0 0 14px" }}>Choose content</h2>
@@ -519,6 +697,7 @@ export function StatusImagesPage() {
 							value={search}
 							onChange={(event) => setSearch(event.target.value)}
 							placeholder="Search by title or summary"
+							className="status-images__search"
 							style={{
 								boxSizing: "border-box",
 								display: "block",
@@ -553,36 +732,20 @@ export function StatusImagesPage() {
 					)}
 				</div>
 
-				<aside>
+				<aside className="status-images__preview">
 					<h2 style={{ color: INK, fontSize: 16, margin: "0 0 14px" }}>Preview</h2>
-					<div
-						style={{
-							overflow: "hidden",
-							border: `1px solid ${RULE}`,
-							background: PAPER,
-							boxShadow: "0 12px 30px rgba(23, 23, 22, 0.12)",
-						}}
-					>
+					<div className="status-images__preview-frame">
 						<canvas
 							ref={canvasRef}
 							aria-label="Generated 9 by 16 social status image preview"
-							style={{ display: "block", width: "100%", height: "auto", aspectRatio: "9 / 16" }}
+							className="status-images__preview-canvas"
 						/>
 					</div>
 					<button
 						type="button"
 						onClick={download}
 						disabled={!selected || downloading}
-						style={{
-							width: "100%",
-							marginTop: 14,
-							padding: "13px 16px",
-							cursor: selected ? "pointer" : "not-allowed",
-							border: `1px solid ${INK}`,
-							background: INK,
-							color: PAPER,
-							fontWeight: 700,
-						}}
+						className="status-images__download"
 					>
 						{downloading ? "Preparing download…" : "Download 1080 × 1920 JPEG"}
 					</button>
