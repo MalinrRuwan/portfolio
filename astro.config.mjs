@@ -1,10 +1,18 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
+import { realpathSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { d1, r2, cloudflareImages, kvCache } from "@emdash-cms/cloudflare";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "emdash/astro";
 import { calloutPlugin } from "@portfolio/emdash-callout";
+
+const emdashEntry = fileURLToPath(import.meta.resolve("emdash"));
+const emdashAdminDirectory = realpathSync(
+  resolve(dirname(emdashEntry), "../../@emdash-cms/admin"),
+);
 
 export default defineConfig({
   output: "server",
@@ -15,6 +23,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      fs: {
+        allow: [process.cwd(), emdashAdminDirectory],
+      },
+    },
   },
   integrations: [
     react(),

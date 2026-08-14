@@ -3,6 +3,7 @@ import { getSiteSettings } from "emdash";
 import { EmDashHead } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { Font } from "astro:assets";
+import { getOgImageUrl } from "../utils/seo";
 import "../styles/global.css";
 import "../styles/v2.css";
 
@@ -17,6 +18,9 @@ const settings = await getSiteSettings();
 const siteTitle = settings?.title || "Malin Dhamsara";
 const fullTitle = title ? `${title} — ${siteTitle}` : siteTitle;
 const siteDescription = settings?.tagline || "";
+const ogImage =
+	image ??
+	getOgImageUrl(settings?.seo?.defaultOgImage?.url, Astro.url.origin);
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -26,8 +30,8 @@ const pageCtx = createPublicPageContext({
 	pageTitle: title ?? siteTitle,
 	description: description || siteDescription,
 	canonical: Astro.url.href,
-	image,
-	seo: { ogImage: image },
+	image: ogImage,
+	seo: { ogImage },
 	siteName: siteTitle,
 });
 ---

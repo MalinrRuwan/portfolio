@@ -5,6 +5,7 @@ import { createPublicPageContext } from "emdash/page";
 import { Font } from "astro:assets";
 import SiteLogo from "../components/SiteLogo.astro";
 import { profile } from "../data/profile";
+import { getOgImageUrl } from "../utils/seo";
 import "../styles/global.css";
 import Bend from "@/components/canvasui/Bend";
 
@@ -20,6 +21,9 @@ const settings = await getSiteSettings();
 const siteTitle = settings?.title || "Malin Dhamsara";
 const fullTitle = title ? `${title} — ${siteTitle}` : siteTitle;
 const siteDescription = settings?.tagline || "";
+const ogImage =
+	image ??
+	getOgImageUrl(settings?.seo?.defaultOgImage?.url, Astro.url.origin);
 
 const menu = await getMenu("primary");
 const pathname = Astro.url.pathname;
@@ -35,8 +39,8 @@ const pageCtx = createPublicPageContext({
 	pageTitle: title ?? siteTitle,
 	description: description || siteDescription,
 	canonical: Astro.url.href,
-	image,
-	seo: { ogImage: image },
+	image: ogImage,
+	seo: { ogImage },
 	siteName: siteTitle,
 });
 
