@@ -179,4 +179,28 @@
     .rich-text img {
         @apply rounded-lg;
     }
+
+    .rich-text table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--color-bg);
+        color: var(--color-ink);
+    }
+
+    .rich-text th,
+    .rich-text td {
+        border: 1px solid var(--color-rule);
+        padding: 0.65rem 0.8rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .rich-text th {
+        background-color: var(--color-chip);
+        font-weight: 600;
+    }
+
+    .rich-text tbody tr:nth-child(even) {
+        background-color: color-mix(in srgb, var(--color-ink) 4%, var(--color-bg));
+    }
 }
