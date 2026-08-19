@@ -65,6 +65,7 @@ const DEFAULTS: Required<BendOptions> = {
   bottom: true,
   tumble: 0.5,
   tilt: 0.5,
+  toggleKey: "",
 };
 
 type PaintableCanvas = HTMLCanvasElement & {
