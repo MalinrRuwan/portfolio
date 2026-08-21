@@ -148,23 +148,23 @@ const year = new Date().getFullYear();
         </a>
 
         <header
-            class="site-header sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300"
+            class="site-header sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-300"
             data-header
         >
             <nav
-                class="mx-auto flex w-full max-w-site items-center justify-between gap-6 px-6 py-5 sm:px-10"
+                class="mx-auto flex min-h-[4.5rem] w-full max-w-site items-center justify-between gap-6 px-6 py-5 sm:px-10"
                 aria-label="Primary navigation"
             >
                 <a
                     href="/"
-                    class="relative z-[55] transition-opacity hover:opacity-70"
+                    class="relative z-[55] shrink-0 transition-opacity hover:opacity-70"
                     aria-label={siteTitle}
                 >
                     <SiteLogo class="site-logo h-8 w-auto" />
                 </a>
 
                 {/* Desktop links */}
-                <div class="hidden items-baseline gap-8 sm:flex">
+                <div class="hidden shrink-0 items-baseline gap-8 sm:flex">
                     {
                         menu?.items.map((item) => (
                             <a
@@ -174,7 +174,7 @@ const year = new Date().getFullYear();
                                     isCurrent(item.url) ? "page" : undefined
                                 }
                                 class:list={[
-                                    "u-link text-sm font-medium",
+                                    "u-link whitespace-nowrap text-sm font-medium",
                                     isCurrent(item.url)
                                         ? "text-ink decoration-ink"
                                         : "text-muted hover:text-ink",
@@ -455,7 +455,7 @@ const year = new Date().getFullYear();
         <style>
             .site-header.is-scrolled {
                 background-color: var(--color-bg);
-                border-bottom: 1px solid var(--color-rule);
+                border-bottom-color: var(--color-rule);
             }
 
             .menu-line {

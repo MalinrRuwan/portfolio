@@ -30,6 +30,7 @@
 
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   .canvasui-bend-content {
@@ -41,7 +42,7 @@
     height: 0;
   }
 
-  /* Match the space a normal browser scrollbar occupies without adding a gutter. */
+  /* Reserve space for the custom Bend scrollbar when it is enabled. */
   html.bend-enabled .site-header,
   .canvasui-bend-enabled {
     padding-right: 1rem;
