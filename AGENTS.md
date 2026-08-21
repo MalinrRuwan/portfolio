@@ -24,19 +24,19 @@ bunx emdash dev        # same as bun run dev, but runs migrations automatically
 
 ## Key files
 
-| File | Purpose |
-| ---- | ------- |
-| `astro.config.mjs` | Astro + EmDash integration, SQLite + local storage, fonts |
-| `src/live.config.ts` | EmDash live-collection loader (boilerplate) |
-| `seed/seed.json` | Initial schema + sample content (collections, taxonomies, menus) |
-| `src/data/profile.ts` | Structured resume/personal data (about, stack, volunteering, education, contact) |
-| `src/styles/global.css` | Tailwind v4 tokens + `@utility` classes (kicker, display, u-link, reveal) |
-| `src/layouts/Base.astro` | Layout with responsive nav, footer, scroll-reveal script |
-| `src/components/SiteLogo.astro` | Inline SVG logo (header + favicon source); theme-aware fill/stroke |
-| `src/components/SectionHeader.astro` | Numbered kicker + hairline |
-| `src/components/PageHeader.astro` | Editorial page header for subpages |
-| `src/components/PostRow.astro` | Blog list row |
-| `src/components/ProjectCard.astro` | Project card (used in index + detail) |
+| File                                 | Purpose                                                                          |
+| ------------------------------------ | -------------------------------------------------------------------------------- |
+| `astro.config.mjs`                   | Astro + EmDash integration, SQLite + local storage, fonts                        |
+| `src/live.config.ts`                 | EmDash live-collection loader (boilerplate)                                      |
+| `seed/seed.json`                     | Initial schema + sample content (collections, taxonomies, menus)                 |
+| `src/data/profile.ts`                | Structured resume/personal data (about, stack, volunteering, education, contact) |
+| `src/styles/global.css`              | Tailwind v4 tokens + `@utility` classes (kicker, display, u-link, reveal)        |
+| `src/layouts/Base.astro`             | Layout with responsive nav, footer, scroll-reveal script                         |
+| `src/components/SiteLogo.astro`      | Inline SVG logo (header + favicon source); theme-aware fill/stroke               |
+| `src/components/SectionHeader.astro` | Numbered kicker + hairline                                                       |
+| `src/components/PageHeader.astro`    | Editorial page header for subpages                                               |
+| `src/components/PostRow.astro`       | Blog list row                                                                    |
+| `src/components/ProjectCard.astro`   | Project card (used in index + detail)                                            |
 
 ## Content model
 
@@ -69,6 +69,7 @@ The `seed/seed.json` only populates an empty database. After setup, editors can 
 ## Responsive navbar
 
 `src/layouts/Base.astro` contains a robust, accessible header:
+
 - Site logo is an inline SVG component (`src/components/SiteLogo.astro`) so it renders as vector rather than a rasterized `<img>`, with `shape-rendering="geometricPrecision"` and GPU-promotion for smooth edges on retina displays. Theme-aware fill/stroke replaces the old CSS `filter: invert()`.
 - Skip-to-content link appears on focus for keyboard users.
 - Sticky header that gains a solid background + hairline border after scrolling.

@@ -254,20 +254,20 @@ function patchHoverRules() {
               /:hover\b/g,
               HOVER_REWRITE,
             );
-          } catch { }
+          } catch {}
         }
         if (rule.cssRules.length) walk(rule.cssRules);
       } else if ("cssRules" in rule) {
         try {
           walk((rule as CSSGroupingRule).cssRules);
-        } catch { }
+        } catch {}
       }
     }
   };
   for (const sheet of Array.from(document.styleSheets)) {
     try {
       walk(sheet.cssRules);
-    } catch { }
+    } catch {}
   }
   const style = document.createElement("style");
   style.textContent = `[${CONTENT_ATTR}], [${CONTENT_ATTR}] * { cursor: var(--canvasui-cursor, auto) !important; }`;
@@ -299,7 +299,7 @@ export function createBend(
   );
 
   let contentDirty = false;
-  let wake = () => { };
+  let wake = () => {};
 
   if (htmlInCanvas) {
     paintable.onpaint = () => {
@@ -308,7 +308,7 @@ export function createBend(
         sourceCtx!.drawElementImage!(content, 0, 0);
         contentDirty = true;
         wake();
-      } catch { }
+      } catch {}
     };
   }
 
@@ -979,10 +979,16 @@ export interface BendProps extends BendOptions {
   style?: React.CSSProperties;
 }
 
-const emptySubscribe = () => () => { };
+const emptySubscribe = () => () => {};
 const BEND_ENABLED_STORAGE_KEY = "canvasui-bend-enabled";
 
-export function Bend({ children, className, style, toggleKey, ...options }: BendProps) {
+export function Bend({
+  children,
+  className,
+  style,
+  toggleKey,
+  ...options
+}: BendProps) {
   const sourceRef = useRef<HTMLCanvasElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const outputRef = useRef<HTMLCanvasElement>(null);
@@ -1046,7 +1052,7 @@ export function Bend({ children, className, style, toggleKey, ...options }: Bend
 
       setEnabled((current) => {
         pendingScrollTopRef.current = current
-          ? contentRef.current?.scrollTop ?? window.scrollY
+          ? (contentRef.current?.scrollTop ?? window.scrollY)
           : window.scrollY;
         return !current;
       });
@@ -1131,7 +1137,11 @@ export function Bend({ children, className, style, toggleKey, ...options }: Bend
   }, [enabled]);
 
   if (!enabled) {
-    return <div className={className} style={style}>{children}</div>;
+    return (
+      <div className={className} style={style}>
+        {children}
+      </div>
+    );
   }
 
   return (
@@ -1212,6 +1222,5 @@ export function Bend({ children, className, style, toggleKey, ...options }: Bend
     </div>
   );
 }
-
 
 export default Bend;

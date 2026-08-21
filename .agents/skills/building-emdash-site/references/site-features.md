@@ -67,18 +67,23 @@ const primaryMenu = await getMenu("primary");
 
 ```typescript
 interface MenuItem {
-	id: string;
-	label: string;
-	url: string; // Resolved URL
-	target?: string; // "_blank" etc.
-	children: MenuItem[];
+  id: string;
+  label: string;
+  url: string; // Resolved URL
+  target?: string; // "_blank" etc.
+  children: MenuItem[];
 }
 ```
 
 ## Taxonomies
 
 ```typescript
-import { getTaxonomyTerms, getTerm, getEntryTerms, getEntriesByTerm } from "emdash";
+import {
+  getTaxonomyTerms,
+  getTerm,
+  getEntryTerms,
+  getEntriesByTerm,
+} from "emdash";
 
 // All terms in a taxonomy (name must match your seed's "name" field exactly)
 const categories = await getTaxonomyTerms("category");
@@ -190,12 +195,12 @@ Theme via CSS variables:
 
 ```css
 :root {
-	--emdash-search-bg: var(--color-bg);
-	--emdash-search-text: var(--color-text);
-	--emdash-search-muted: var(--color-muted);
-	--emdash-search-border: var(--color-border);
-	--emdash-search-hover: var(--color-surface);
-	--emdash-search-highlight: var(--color-text);
+  --emdash-search-bg: var(--color-bg);
+  --emdash-search-text: var(--color-text);
+  --emdash-search-muted: var(--color-muted);
+  --emdash-search-border: var(--color-border);
+  --emdash-search-hover: var(--color-surface);
+  --emdash-search-highlight: var(--color-text);
 }
 ```
 
@@ -205,9 +210,9 @@ Theme via CSS variables:
 import { search } from "emdash";
 
 const results = await search("hello world", {
-	collections: ["posts", "pages"],
-	status: "published",
-	limit: 20,
+  collections: ["posts", "pages"],
+  status: "published",
+  limit: 20,
 });
 // { results: SearchResult[], total, nextCursor? }
 ```
@@ -238,12 +243,12 @@ Add Cmd+K / Ctrl+K to focus search:
 
 ```html
 <script>
-	document.addEventListener("keydown", (e) => {
-		if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-			e.preventDefault();
-			document.querySelector(".site-search-input")?.focus();
-		}
-	});
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      document.querySelector(".site-search-input")?.focus();
+    }
+  });
 </script>
 ```
 
@@ -263,10 +268,10 @@ Generate SEO meta from content entries:
 import { getSeoMeta } from "emdash";
 
 const seo = getSeoMeta(post, {
-	siteTitle: "My Blog",
-	siteUrl: Astro.url.origin,
-	path: `/blog/${slug}`,
-	defaultOgImage: featuredImageUrl, // Optional fallback
+  siteTitle: "My Blog",
+  siteUrl: Astro.url.origin,
+  path: `/blog/${slug}`,
+  defaultOgImage: featuredImageUrl, // Optional fallback
 });
 
 // Returns: { title, description, canonical, ogImage, robots }
@@ -371,13 +376,13 @@ const byline = await getBylineBySlug("jane-doe");
 
 ```typescript
 interface BylineSummary {
-	id: string;
-	slug: string;
-	displayName: string;
-	bio: string | null;
-	avatarMediaId: string | null;
-	websiteUrl: string | null;
-	isGuest: boolean;
+  id: string;
+  slug: string;
+  displayName: string;
+  bio: string | null;
+  avatarMediaId: string | null;
+  websiteUrl: string | null;
+  isGuest: boolean;
 }
 ```
 
@@ -385,10 +390,10 @@ interface BylineSummary {
 
 ```typescript
 interface ContentBylineCredit {
-	byline: BylineSummary;
-	sortOrder: number;
-	roleLabel: string | null; // e.g., "Guest essay", "Photographer"
-	source?: "explicit" | "inferred"; // "inferred" = fallback from author_id
+  byline: BylineSummary;
+  sortOrder: number;
+  roleLabel: string | null; // e.g., "Guest essay", "Photographer"
+  source?: "explicit" | "inferred"; // "inferred" = fallback from author_id
 }
 ```
 
@@ -399,16 +404,16 @@ Cookie-based theme switching (no flash on load):
 ```html
 <!-- In <head>, before styles load -->
 <script is:inline>
-	(function () {
-		var c = document.cookie;
-		var i = c.indexOf("theme=");
-		var theme = i >= 0 ? c.slice(i + 6).split(";")[0] : null;
-		if (theme === "dark" || theme === "light") {
-			document.documentElement.classList.add(theme);
-		} else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-			document.documentElement.classList.add("dark");
-		}
-	})();
+  (function () {
+    var c = document.cookie;
+    var i = c.indexOf("theme=");
+    var theme = i >= 0 ? c.slice(i + 6).split(";")[0] : null;
+    if (theme === "dark" || theme === "light") {
+      document.documentElement.classList.add(theme);
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.classList.add("dark");
+    }
+  })();
 </script>
 ```
 
@@ -416,12 +421,12 @@ Then use CSS variables that change based on `.dark` class:
 
 ```css
 :root {
-	--color-bg: #ffffff;
-	--color-text: #1a1a1a;
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
 }
 :root.dark {
-	--color-bg: #0d0d0d;
-	--color-text: #ededed;
+  --color-bg: #0d0d0d;
+  --color-text: #ededed;
 }
 ```
 

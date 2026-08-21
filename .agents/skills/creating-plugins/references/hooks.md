@@ -278,13 +278,16 @@ Runs before email delivery. Return modified message, or `false` to cancel delive
 
 ```typescript
 definePlugin({
-	id: "email-footer",
-	capabilities: ["hooks.email-events:register"],
-	hooks: {
-		"email:beforeSend": async (event, ctx) => {
-			return { ...event.message, text: event.message.text + "\n\n-- Sent via EmDash" };
-		},
-	},
+  id: "email-footer",
+  capabilities: ["hooks.email-events:register"],
+  hooks: {
+    "email:beforeSend": async (event, ctx) => {
+      return {
+        ...event.message,
+        text: event.message.text + "\n\n-- Sent via EmDash",
+      };
+    },
+  },
 });
 ```
 
@@ -299,22 +302,26 @@ Implements email transport (e.g. Resend, SMTP, SES). Selected by the admin in Se
 
 ```typescript
 definePlugin({
-	id: "emdash-resend",
-	capabilities: ["hooks.email-transport:register", "network:request"],
-	allowedHosts: ["api.resend.com"],
-	hooks: {
-		"email:deliver": {
-			exclusive: true,
-			handler: async ({ message }, ctx) => {
-				const apiKey = await ctx.kv.get("settings:apiKey");
-				await ctx.http!.fetch("https://api.resend.com/emails", {
-					method: "POST",
-					headers: { Authorization: `Bearer ${apiKey}` },
-					body: JSON.stringify({ to: message.to, subject: message.subject, text: message.text }),
-				});
-			},
-		},
-	},
+  id: "emdash-resend",
+  capabilities: ["hooks.email-transport:register", "network:request"],
+  allowedHosts: ["api.resend.com"],
+  hooks: {
+    "email:deliver": {
+      exclusive: true,
+      handler: async ({ message }, ctx) => {
+        const apiKey = await ctx.kv.get("settings:apiKey");
+        await ctx.http!.fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${apiKey}` },
+          body: JSON.stringify({
+            to: message.to,
+            subject: message.subject,
+            text: message.text,
+          }),
+        });
+      },
+    },
+  },
 });
 ```
 
@@ -329,13 +336,15 @@ Runs after successful delivery. Fire-and-forget — errors are logged but don't 
 
 ```typescript
 definePlugin({
-	id: "email-logger",
-	capabilities: ["hooks.email-events:register"],
-	hooks: {
-		"email:afterSend": async (event, ctx) => {
-			ctx.log.info(`Email sent to ${event.message.to}`, { source: event.source });
-		},
-	},
+  id: "email-logger",
+  capabilities: ["hooks.email-events:register"],
+  hooks: {
+    "email:afterSend": async (event, ctx) => {
+      ctx.log.info(`Email sent to ${event.message.to}`, {
+        source: event.source,
+      });
+    },
+  },
 });
 ```
 
@@ -350,17 +359,17 @@ Runs on a schedule. Configure schedules via `ctx.cron.schedule()` in `plugin:act
 
 ```typescript
 definePlugin({
-	id: "cleanup",
-	hooks: {
-		"plugin:activate": async (_event, ctx) => {
-			await ctx.cron!.schedule("daily-cleanup", { schedule: "0 2 * * *" });
-		},
-		cron: async (event, ctx) => {
-			if (event.name === "daily-cleanup") {
-				// ... cleanup logic
-			}
-		},
-	},
+  id: "cleanup",
+  hooks: {
+    "plugin:activate": async (_event, ctx) => {
+      await ctx.cron!.schedule("daily-cleanup", { schedule: "0 2 * * *" });
+    },
+    cron: async (event, ctx) => {
+      if (event.name === "daily-cleanup") {
+        // ... cleanup logic
+      }
+    },
+  },
 });
 ```
 

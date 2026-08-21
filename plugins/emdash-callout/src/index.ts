@@ -39,27 +39,27 @@ export function createPlugin(options: CalloutPluginOptions = {}) {
         options.enabled === false
           ? []
           : [
-            {
-              type: "callout",
-              label: "Callout",
-              icon: "link",
-              description: "Highlight an important note or takeaway.",
-              fields: [
-                {
-                  type: "text_input",
-                  action_id: "title",
-                  label: "Title",
-                  placeholder: "Key takeaway",
-                },
-                {
-                  type: "text_input",
-                  action_id: "body",
-                  label: "Body",
-                  placeholder: "Add the supporting detail…",
-                },
-              ],
-            },
-          ],
+              {
+                type: "callout",
+                label: "Callout",
+                icon: "link",
+                description: "Highlight an important note or takeaway.",
+                fields: [
+                  {
+                    type: "text_input",
+                    action_id: "title",
+                    label: "Title",
+                    placeholder: "Key takeaway",
+                  },
+                  {
+                    type: "text_input",
+                    action_id: "body",
+                    label: "Body",
+                    placeholder: "Add the supporting detail…",
+                  },
+                ],
+              },
+            ],
     },
   });
 }

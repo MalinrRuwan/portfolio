@@ -50,13 +50,13 @@ The simplest possible plugin -- just hooks:
 import type { PluginDescriptor } from "emdash";
 
 export function myPlugin(): PluginDescriptor {
-	return {
-		id: "my-plugin",
-		version: "1.0.0",
-		format: "standard",
-		entrypoint: "@my-org/my-plugin/sandbox",
-		options: {},
-	};
+  return {
+    id: "my-plugin",
+    version: "1.0.0",
+    format: "standard",
+    entrypoint: "@my-org/my-plugin/sandbox",
+    options: {},
+  };
 }
 ```
 
@@ -66,13 +66,13 @@ import { definePlugin } from "emdash";
 import type { PluginContext } from "emdash";
 
 export default definePlugin({
-	hooks: {
-		"content:afterSave": {
-			handler: async (event: any, ctx: PluginContext) => {
-				ctx.log.info(`Saved ${event.collection}/${event.content.id}`);
-			},
-		},
-	},
+  hooks: {
+    "content:afterSave": {
+      handler: async (event: any, ctx: PluginContext) => {
+        ctx.log.info(`Saved ${event.collection}/${event.content.id}`);
+      },
+    },
+  },
 });
 ```
 
@@ -100,13 +100,13 @@ The descriptor is imported in `astro.config.mjs` (Vite context):
 import { myPlugin } from "@my-org/my-plugin";
 
 export default defineConfig({
-	integrations: [
-		emdash({
-			plugins: [myPlugin()], // runs in-process
-			// OR
-			sandboxed: [myPlugin()], // runs in isolate on Cloudflare
-		}),
-	],
+  integrations: [
+    emdash({
+      plugins: [myPlugin()], // runs in-process
+      // OR
+      sandboxed: [myPlugin()], // runs in isolate on Cloudflare
+    }),
+  ],
 });
 ```
 
@@ -158,19 +158,19 @@ import { definePlugin } from "emdash";
 import type { PluginContext } from "emdash";
 
 export default definePlugin({
-	hooks: {
-		"content:afterSave": {
-			handler: async (event: any, ctx: PluginContext) => {
-				// Trusted: ctx.http present because descriptor declares network:request
-				// Sandboxed: ctx.http present and enforced via RPC bridge
-				if (!ctx.http) return;
-				await ctx.http.fetch("https://api.analytics.example.com/track", {
-					method: "POST",
-					body: JSON.stringify({ contentId: event.content.id }),
-				});
-			},
-		},
-	},
+  hooks: {
+    "content:afterSave": {
+      handler: async (event: any, ctx: PluginContext) => {
+        // Trusted: ctx.http present because descriptor declares network:request
+        // Sandboxed: ctx.http present and enforced via RPC bridge
+        if (!ctx.http) return;
+        await ctx.http.fetch("https://api.analytics.example.com/track", {
+          method: "POST",
+          body: JSON.stringify({ contentId: event.content.id }),
+        });
+      },
+    },
+  },
 });
 ```
 
@@ -205,15 +205,15 @@ Storage (`ctx.storage`) and KV (`ctx.kv`) are **always available** — no capabi
 ```typescript
 // In the descriptor (index.ts)
 export function myPlugin(): PluginDescriptor {
-	return {
-		id: "my-plugin",
-		version: "1.0.0",
-		format: "standard",
-		entrypoint: "@my-org/my-plugin/sandbox",
-		options: {},
-		capabilities: ["content:read", "network:request"],
-		allowedHosts: ["api.example.com", "*.googleapis.com"], // Wildcards supported
-	};
+  return {
+    id: "my-plugin",
+    version: "1.0.0",
+    format: "standard",
+    entrypoint: "@my-org/my-plugin/sandbox",
+    options: {},
+    capabilities: ["content:read", "network:request"],
+    allowedHosts: ["api.example.com", "*.googleapis.com"], // Wildcards supported
+  };
 }
 ```
 
@@ -237,16 +237,16 @@ Configure `package.json` exports so EmDash can load each entry point:
 
 ```json
 {
-	"name": "@my-org/my-plugin",
-	"type": "module",
-	"exports": {
-		".": "./src/index.ts",
-		"./sandbox": "./src/sandbox-entry.ts",
-		"./admin": "./src/admin.tsx"
-	},
-	"peerDependencies": {
-		"emdash": "^0.1.0"
-	}
+  "name": "@my-org/my-plugin",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./sandbox": "./src/sandbox-entry.ts",
+    "./admin": "./src/admin.tsx"
+  },
+  "peerDependencies": {
+    "emdash": "^0.1.0"
+  }
 }
 ```
 
@@ -292,21 +292,23 @@ See the reference files for detailed syntax:
 import type { PluginDescriptor } from "emdash";
 
 export function submissionsPlugin(): PluginDescriptor {
-	return {
-		id: "submissions",
-		version: "1.0.0",
-		format: "standard",
-		entrypoint: "@my-org/plugin-submissions/sandbox",
-		options: {},
-		capabilities: ["content:read"],
-		storage: {
-			submissions: {
-				indexes: ["formId", "status", "createdAt"],
-			},
-		},
-		adminPages: [{ path: "/submissions", label: "Submissions", icon: "list" }],
-		adminWidgets: [{ id: "recent-submissions", title: "Recent Submissions", size: "half" }],
-	};
+  return {
+    id: "submissions",
+    version: "1.0.0",
+    format: "standard",
+    entrypoint: "@my-org/plugin-submissions/sandbox",
+    options: {},
+    capabilities: ["content:read"],
+    storage: {
+      submissions: {
+        indexes: ["formId", "status", "createdAt"],
+      },
+    },
+    adminPages: [{ path: "/submissions", label: "Submissions", icon: "list" }],
+    adminWidgets: [
+      { id: "recent-submissions", title: "Recent Submissions", size: "half" },
+    ],
+  };
 }
 ```
 
@@ -316,94 +318,104 @@ import { definePlugin } from "emdash";
 import type { PluginContext } from "emdash";
 
 export default definePlugin({
-	hooks: {
-		"plugin:install": {
-			handler: async (_event: any, ctx: PluginContext) => {
-				ctx.log.info("Submissions plugin installed");
-				await ctx.kv.set("settings:maxSubmissions", 1000);
-			},
-		},
-	},
+  hooks: {
+    "plugin:install": {
+      handler: async (_event: any, ctx: PluginContext) => {
+        ctx.log.info("Submissions plugin installed");
+        await ctx.kv.set("settings:maxSubmissions", 1000);
+      },
+    },
+  },
 
-	routes: {
-		submit: {
-			public: true, // No auth required
-			handler: async (routeCtx: any, ctx: PluginContext) => {
-				const { formId, ...data } = routeCtx.input as Record<string, unknown>;
+  routes: {
+    submit: {
+      public: true, // No auth required
+      handler: async (routeCtx: any, ctx: PluginContext) => {
+        const { formId, ...data } = routeCtx.input as Record<string, unknown>;
 
-				const count = await ctx.storage.submissions.count({ formId });
-				const max = (await ctx.kv.get<number>("settings:maxSubmissions")) ?? 1000;
+        const count = await ctx.storage.submissions.count({ formId });
+        const max =
+          (await ctx.kv.get<number>("settings:maxSubmissions")) ?? 1000;
 
-				if (count >= max) {
-					return { success: false, error: "Submission limit reached" };
-				}
+        if (count >= max) {
+          return { success: false, error: "Submission limit reached" };
+        }
 
-				const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-				await ctx.storage.submissions.put(id, {
-					formId,
-					data,
-					status: "pending",
-					createdAt: new Date().toISOString(),
-				});
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        await ctx.storage.submissions.put(id, {
+          formId,
+          data,
+          status: "pending",
+          createdAt: new Date().toISOString(),
+        });
 
-				return { success: true, id };
-			},
-		},
+        return { success: true, id };
+      },
+    },
 
-		list: {
-			handler: async (routeCtx: any, ctx: PluginContext) => {
-				const url = new URL(routeCtx.request.url);
-				const limit = Math.max(
-					1,
-					Math.min(parseInt(url.searchParams.get("limit") || "50", 10) || 50, 100),
-				);
-				const cursor = url.searchParams.get("cursor") || undefined;
+    list: {
+      handler: async (routeCtx: any, ctx: PluginContext) => {
+        const url = new URL(routeCtx.request.url);
+        const limit = Math.max(
+          1,
+          Math.min(
+            parseInt(url.searchParams.get("limit") || "50", 10) || 50,
+            100,
+          ),
+        );
+        const cursor = url.searchParams.get("cursor") || undefined;
 
-				const result = await ctx.storage.submissions.query({
-					orderBy: { createdAt: "desc" },
-					limit,
-					cursor,
-				});
+        const result = await ctx.storage.submissions.query({
+          orderBy: { createdAt: "desc" },
+          limit,
+          cursor,
+        });
 
-				return {
-					items: result.items.map((item: any) => ({ id: item.id, ...item.data })),
-					cursor: result.cursor,
-					hasMore: result.hasMore,
-				};
-			},
-		},
+        return {
+          items: result.items.map((item: any) => ({
+            id: item.id,
+            ...item.data,
+          })),
+          cursor: result.cursor,
+          hasMore: result.hasMore,
+        };
+      },
+    },
 
-		// Block Kit admin handler for pages and widgets
-		admin: {
-			handler: async (routeCtx: any, ctx: PluginContext) => {
-				const interaction = routeCtx.input as { type: string; page?: string };
+    // Block Kit admin handler for pages and widgets
+    admin: {
+      handler: async (routeCtx: any, ctx: PluginContext) => {
+        const interaction = routeCtx.input as { type: string; page?: string };
 
-				if (interaction.type === "page_load" && interaction.page === "/submissions") {
-					const result = await ctx.storage.submissions.query({
-						orderBy: { createdAt: "desc" },
-						limit: 50,
-					});
-					return {
-						blocks: [
-							{ type: "header", text: "Submissions" },
-							{
-								type: "table",
-								blockId: "submissions-table",
-								columns: [
-									{ key: "formId", label: "Form", format: "text" },
-									{ key: "status", label: "Status", format: "badge" },
-									{ key: "createdAt", label: "Date", format: "relative_time" },
-								],
-								rows: result.items.map((item: any) => item.data),
-							},
-						],
-					};
-				}
+        if (
+          interaction.type === "page_load" &&
+          interaction.page === "/submissions"
+        ) {
+          const result = await ctx.storage.submissions.query({
+            orderBy: { createdAt: "desc" },
+            limit: 50,
+          });
+          return {
+            blocks: [
+              { type: "header", text: "Submissions" },
+              {
+                type: "table",
+                blockId: "submissions-table",
+                columns: [
+                  { key: "formId", label: "Form", format: "text" },
+                  { key: "status", label: "Status", format: "badge" },
+                  { key: "createdAt", label: "Date", format: "relative_time" },
+                ],
+                rows: result.items.map((item: any) => item.data),
+              },
+            ],
+          };
+        }
 
-				return { blocks: [] };
-			},
-		},
-	},
+        return { blocks: [] };
+      },
+    },
+  },
 });
 ```
 
@@ -413,16 +425,16 @@ All hooks and routes receive `ctx` (PluginContext):
 
 ```typescript
 interface PluginContext {
-	plugin: { id: string; version: string };
-	storage: Record<string, StorageCollection>; // Declared collections
-	kv: KVAccess; // Key-value store
-	log: LogAccess; // Structured logger
-	content?: ContentAccess; // If "content:read" capability
-	media?: MediaAccess; // If "media:read" capability
-	http?: HttpAccess; // If "network:request" capability
-	users?: UserAccess; // If "users:read" capability
-	cron?: CronAccess; // Always available — scoped to plugin
-	email?: EmailAccess; // If "email:send" capability AND a provider is configured
+  plugin: { id: string; version: string };
+  storage: Record<string, StorageCollection>; // Declared collections
+  kv: KVAccess; // Key-value store
+  log: LogAccess; // Structured logger
+  content?: ContentAccess; // If "content:read" capability
+  media?: MediaAccess; // If "media:read" capability
+  http?: HttpAccess; // If "network:request" capability
+  users?: UserAccess; // If "users:read" capability
+  cron?: CronAccess; // Always available — scoped to plugin
+  email?: EmailAccess; // If "email:send" capability AND a provider is configured
 }
 ```
 
@@ -431,16 +443,16 @@ Capabilities are declared in the **descriptor** (not in `definePlugin()` for sta
 ```typescript
 // In the descriptor
 export function myPlugin(): PluginDescriptor {
-	return {
-		id: "my-plugin",
-		version: "1.0.0",
-		format: "standard",
-		entrypoint: "@my-org/my-plugin/sandbox",
-		options: {},
-		capabilities: ["content:read", "network:request"],
-		allowedHosts: ["api.example.com"],
-		storage: { events: { indexes: ["timestamp"] } },
-	};
+  return {
+    id: "my-plugin",
+    version: "1.0.0",
+    format: "standard",
+    entrypoint: "@my-org/my-plugin/sandbox",
+    options: {},
+    capabilities: ["content:read", "network:request"],
+    allowedHosts: ["api.example.com"],
+    storage: { events: { indexes: ["timestamp"] } },
+  };
 }
 ```
 

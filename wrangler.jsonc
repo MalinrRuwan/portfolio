@@ -8,25 +8,25 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "portfolio-db"
-    }
+      "database_name": "portfolio-db",
+    },
   ],
   "r2_buckets": [
     {
       "binding": "MEDIA",
-      "bucket_name": "portfolio-bucket"
-    }
+      "bucket_name": "portfolio-bucket",
+    },
   ],
   "kv_namespaces": [
     {
       "binding": "CACHE",
-      "id": "060f94f5750044349e2d179c94b76c2d"
-    }
+      "id": "060f94f5750044349e2d179c94b76c2d",
+    },
   ],
   "images": {
-    "binding": "IMAGES"
+    "binding": "IMAGES",
   },
   "triggers": {
-    "crons": ["* * * * *"]
-  }
+    "crons": ["* * * * *"],
+  },
 }
