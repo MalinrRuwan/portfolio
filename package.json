@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "emdash dev",
     "build": "astro build",
-    "preview": "wrangler dev",
+    "preview": "astro build && wrangler dev",
     "deploy": "wrangler deploy",
     "typecheck": "astro check"
   },
