@@ -31,6 +31,12 @@
   html {
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 
   .canvasui-bend-content {
@@ -42,11 +48,48 @@
     height: 0;
   }
 
-  /* Reserve space for the custom Bend scrollbar when it is enabled. */
-  html.bend-enabled .site-header,
-  .canvasui-bend-enabled {
-    padding-right: 1rem;
+  .canvasui-bend-scrollbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    width: 1px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    pointer-events: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+
+  .canvasui-bend-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .canvasui-bend-scrollbar-thumb,
+  .page-scrollbar-thumb {
+    position: fixed;
+    top: 0;
+    right: 3px;
+    z-index: 2;
+    width: 6px;
+    height: 0;
+    border-radius: 999px;
+    background-color: color-mix(
+      in srgb,
+      var(--color-muted) 50%,
+      transparent
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    will-change: transform, opacity;
+  }
+
+  html.bend-enabled .page-scrollbar-thumb {
+    display: none;
+  }
+
 
   body {
     @apply bg-bg font-sans text-ink antialiased;

@@ -4,6 +4,7 @@ import { EmDashHead } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { Font } from "astro:assets";
 import { getOgImageUrl } from "../utils/seo";
+import PageScrollbar from "../components/PageScrollbar.astro";
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import "../styles/v2.css";
@@ -79,6 +80,7 @@ const pageCtx = createPublicPageContext({
 		>
 			Skip the film — jump to contact
 		</a>
+		<PageScrollbar />
 		<slot />
 	</body>
 </html>

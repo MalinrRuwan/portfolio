@@ -4,6 +4,7 @@ import { EmDashHead } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { Font } from "astro:assets";
 import SiteLogo from "../components/SiteLogo.astro";
+import PageScrollbar from "../components/PageScrollbar.astro";
 import { profile } from "../data/profile";
 import { getOgImageUrl } from "../utils/seo";
 import "../styles/global.css";
@@ -146,6 +147,8 @@ const year = new Date().getFullYear();
         >
             Skip to main content
         </a>
+
+        <PageScrollbar />
 
         <header
             class="site-header sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-300"

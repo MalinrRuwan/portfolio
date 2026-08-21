@@ -993,6 +993,7 @@ export function Bend({
   const contentRef = useRef<HTMLDivElement>(null);
   const outputRef = useRef<HTMLCanvasElement>(null);
   const scrollbarRef = useRef<HTMLDivElement>(null);
+  const scrollbarThumbRef = useRef<HTMLDivElement>(null);
   const scrollbarSpacerRef = useRef<HTMLDivElement>(null);
   const pendingScrollTopRef = useRef<number | null>(null);
   const instanceRef = useRef<BendInstance | null>(null);
@@ -1018,7 +1019,7 @@ export function Bend({
   useEffect(() => {
     if (!toggleKey) return;
 
-    document.documentElement.classList.toggle("bend-enabled", enabled);
+    document.documentElement.classList.toggle("bend-enabled", enabled && native);
     try {
       window.localStorage.setItem(BEND_ENABLED_STORAGE_KEY, String(enabled));
     } catch {
@@ -1026,7 +1027,7 @@ export function Bend({
     }
 
     return () => document.documentElement.classList.remove("bend-enabled");
-  }, [enabled, toggleKey]);
+  }, [enabled, native, toggleKey]);
 
   useEffect(() => {
     if (!toggleKey) return;
@@ -1063,7 +1064,7 @@ export function Bend({
   }, [toggleKey]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !native) return;
 
     const source = sourceRef.current;
     const content = contentRef.current;
@@ -1089,22 +1090,77 @@ export function Bend({
 
     const content = contentRef.current;
     const scrollbar = scrollbarRef.current;
+    const thumb = scrollbarThumbRef.current;
     const spacer = scrollbarSpacerRef.current;
-    if (!content || !scrollbar || !spacer) return;
+    if (!content || !scrollbar || !thumb || !spacer) return;
 
     let syncing = false;
+    let hideTimer: number | null = null;
+
+    const syncThumbFrame = () => {
+      // Fixed elements can be anchored to the layout viewport when the root
+      // reserves a scrollbar gutter. Compensate so the thumb stays 3px from
+      // the actual viewport edge across browsers.
+      thumb.style.right = "3px";
+      const frameRight = thumb.getBoundingClientRect().right;
+      const desiredRight = window.innerWidth - 3;
+      const viewportOffset = Math.max(0, desiredRight - frameRight);
+      thumb.style.right = `${3 - viewportOffset}px`;
+    };
+
     const syncScrollbar = () => {
       spacer.style.height = `${content.scrollHeight}px`;
+      const maxScroll = Math.max(
+        content.scrollHeight - content.clientHeight,
+        0,
+      );
+      const viewportHeight = Math.max(window.innerHeight, 1);
+      const thumbHeight =
+        maxScroll > 0
+          ? Math.max(
+            24,
+            Math.round(
+              (content.clientHeight / Math.max(content.scrollHeight, 1)) *
+              viewportHeight,
+            ),
+          )
+          : 0;
+      const travel = Math.max(0, viewportHeight - thumbHeight);
+      const progress = maxScroll > 0 ? content.scrollTop / maxScroll : 0;
+
+      thumb.style.height = `${Math.min(thumbHeight, viewportHeight)}px`;
+      thumb.style.transform = `translate3d(0, ${progress * travel}px, 0)`;
       if (!syncing) scrollbar.scrollTop = content.scrollTop;
+    };
+
+    const revealThumb = () => {
+      if (thumb.offsetHeight === 0) return;
+      thumb.style.opacity = "1";
+      if (hideTimer !== null) window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => {
+        thumb.style.opacity = "0";
+        hideTimer = null;
+      }, 700);
+    };
+
+    const onContentScroll = () => {
+      syncScrollbar();
+      revealThumb();
     };
     const syncContent = () => {
       syncing = true;
       content.scrollTop = scrollbar.scrollTop;
       syncing = false;
     };
+    const onResize = () => {
+      syncThumbFrame();
+      syncScrollbar();
+    };
 
+    syncThumbFrame();
     syncScrollbar();
-    content.addEventListener("scroll", syncScrollbar);
+    window.addEventListener("resize", onResize);
+    content.addEventListener("scroll", onContentScroll);
     scrollbar.addEventListener("scroll", syncContent);
     const resizeObserver = new ResizeObserver(syncScrollbar);
     resizeObserver.observe(content);
@@ -1112,7 +1168,10 @@ export function Bend({
     mutationObserver.observe(content, { childList: true, subtree: true });
 
     return () => {
-      content.removeEventListener("scroll", syncScrollbar);
+      if (hideTimer !== null) window.clearTimeout(hideTimer);
+      thumb.style.opacity = "0";
+      window.removeEventListener("resize", onResize);
+      content.removeEventListener("scroll", onContentScroll);
       scrollbar.removeEventListener("scroll", syncContent);
       resizeObserver.disconnect();
       mutationObserver.disconnect();
@@ -1123,20 +1182,23 @@ export function Bend({
     const scrollTop = pendingScrollTopRef.current;
     if (scrollTop === null) return;
 
-    if (enabled) {
+    if (enabled && native) {
       const content = contentRef.current;
       if (!content) return;
       content.scrollTop = scrollTop;
       if (scrollbarRef.current) scrollbarRef.current.scrollTop = scrollTop;
       window.scrollTo(0, 0);
     } else {
-      requestAnimationFrame(() => window.scrollTo(0, scrollTop));
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollTop);
+        window.dispatchEvent(new Event("scroll"));
+      });
     }
 
     pendingScrollTopRef.current = null;
-  }, [enabled]);
+  }, [enabled, native]);
 
-  if (!enabled) {
+  if (!enabled || !native) {
     return (
       <div className={className} style={style}>
         {children}
@@ -1201,23 +1263,20 @@ export function Bend({
         }}
       />
       {native ? (
-        <div
-          ref={scrollbarRef}
-          aria-label="Page scroll"
-          style={{
-            position: "fixed",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            width: "1rem",
-            zIndex: 1,
-            overflowY: "scroll",
-            overflowX: "hidden",
-            scrollbarGutter: "stable",
-          }}
-        >
-          <div ref={scrollbarSpacerRef} style={{ width: 1 }} />
-        </div>
+        <>
+          <div
+            ref={scrollbarRef}
+            className="canvasui-bend-scrollbar"
+            aria-hidden="true"
+          >
+            <div ref={scrollbarSpacerRef} style={{ width: 1 }} />
+          </div>
+          <div
+            ref={scrollbarThumbRef}
+            className="canvasui-bend-scrollbar-thumb"
+            aria-hidden="true"
+          />
+        </>
       ) : null}
     </div>
   );
