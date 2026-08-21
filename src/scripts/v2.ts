@@ -685,5 +685,4 @@ async function boot() {
 
 window.addEventListener("pagehide", teardown);
 document.addEventListener("astro:before-swap", teardown);
-
-boot();
+document.addEventListener("astro:page-load", () => void boot());

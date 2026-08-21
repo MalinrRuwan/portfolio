@@ -4,6 +4,7 @@ import { EmDashHead } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { Font } from "astro:assets";
 import { getOgImageUrl } from "../utils/seo";
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import "../styles/v2.css";
 
@@ -42,6 +43,7 @@ const pageCtx = createPublicPageContext({
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>{fullTitle}</title>
+		<ClientRouter />
 		<meta name="robots" content="noindex" />
 		<EmDashHead page={pageCtx} />
 		<Font cssVariable="--font-inter" preload />

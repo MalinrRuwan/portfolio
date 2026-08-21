@@ -78,6 +78,7 @@ const { id, title, description } = Astro.props;
 </style>
 
 <script>
+	document.addEventListener("astro:page-load", () => {
 	// Closes the dialog when clicking outside the content area (on the backdrop)
 	const dialogs = document.querySelectorAll("dialog");
 
@@ -94,5 +95,6 @@ const { id, title, description } = Astro.props;
 				dialog.close();
 			}
 		});
+	});
 	});
 </script>

@@ -217,7 +217,7 @@ const year = new Date().getFullYear();
 		</header>
 
 
-		<Bend client:only="idle"
+		<Bend client:idle
 		toggleKey="x"
 		className="w-full grow min-h-full"
   zone={200}
@@ -276,6 +276,7 @@ const year = new Date().getFullYear();
 
 
 		<script>
+			document.addEventListener("astro:page-load", () => {
 			// Scroll-aware header background
 			const header = document.querySelector<HTMLElement>("[data-header]");
 			if (header) {
@@ -401,6 +402,7 @@ const year = new Date().getFullYear();
 				els.forEach((el) => io.observe(el));
 			}
 
+			});
 		</script>
 
 		<style>
