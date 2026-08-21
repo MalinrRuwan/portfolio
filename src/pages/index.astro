@@ -32,6 +32,11 @@ if (Astro.cache?.enabled) {
 
 const name = settings?.title || "Malin";
 const tagline = settings?.tagline || "";
+Astro.response.headers.set(
+  'Cache-Control',
+  'public, max-age=0, s-maxage=60, stale-while-revalidate=86400'
+);
+
 ---
 
 <Base>
