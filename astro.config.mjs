@@ -1,4 +1,5 @@
 import cloudflare from "@astrojs/cloudflare";
+import { cacheCloudflare } from "@astrojs/cloudflare/cache";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import { realpathSync } from "node:fs";
@@ -18,6 +19,21 @@ const emdashAdminDirectory = realpathSync(
 export default defineConfig({
   output: "server",
   adapter: cloudflare(),
+  cache: {
+    provider: cacheCloudflare(),
+  },
+  // Aggressive edge caching: public content pages are served from Cloudflare's
+  // Workers Cache for 24h (stale-while-revalidate for 7 days). EmDash tags
+  // each response (posts/projects + path) via Astro.cache.set(), so content
+  // edits purge exactly the affected pages — long TTLs stay safe.
+  routeRules: {
+    "/": { maxAge: 86400, swr: 604800 },
+    "/blog/[...path]": { maxAge: 86400, swr: 604800 },
+    "/projects/[...path]": { maxAge: 86400, swr: 604800 },
+    "/contact": { maxAge: 86400, swr: 604800 },
+    "/v2": { maxAge: 86400, swr: 604800 },
+    "/rss.xml": { maxAge: 600, swr: 3600 },
+  },
   image: {
     layout: "constrained",
     responsiveStyles: true,

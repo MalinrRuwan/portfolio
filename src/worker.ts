@@ -25,6 +25,20 @@ type ExecutionContextLike = {
   waitUntil: (promise: Promise<unknown>) => void;
 };
 
+// EmDash's public media-delivery endpoint (raw file bytes). Everything else
+// under /_emdash is authenticated admin/API traffic.
+const MEDIA_FILE_PREFIX = MEDIA_API_PATH;
+
+// With Workers Cache (wrangler "cache": { "enabled": true }) enabled,
+// responses without Cache-Control are heuristically cached for statuses like
+// 200. EmDash admin/API routes don't all set no-store, so pin them explicitly
+// to keep authenticated traffic out of the edge cache. Hashed static assets
+// (/_astro/*) are excluded so the admin SPA's own files stay cacheable.
+const isBypassCache = (pathname: string) =>
+  pathname.startsWith("/_emdash/") &&
+  !pathname.startsWith(MEDIA_FILE_PREFIX) &&
+  !pathname.includes("/_astro/");
+
 const edgeCache = (caches as CacheStorage & { default: Cache }).default;
 
 async function serveOgImage(
@@ -91,6 +105,17 @@ export default {
       return serveOgImage(request, env, ctx);
     }
 
-    return emdashWorker.fetch(request, env, ctx);
+    const response = await emdashWorker.fetch(request, env, ctx);
+    if (isBypassCache(url.pathname)) {
+      const headers = new Headers(response.headers);
+      headers.set("Cache-Control", "private, no-store");
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+
+    return response;
   },
 };

@@ -26,6 +26,10 @@
   "images": {
     "binding": "IMAGES",
   },
+  "cache": {
+    "enabled": true,
+    "cross_version_cache": true,
+  },
   "triggers": {
     "crons": ["* * * * *"],
   },

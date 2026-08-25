@@ -1,0 +1,93 @@
+---
+// Custom page scrollbar: a fixed 6px thumb on the right edge that mirrors
+// window scroll progress. The native scrollbar is hidden via global.css
+// (scrollbar-width:none + webkit-scrollbar width:0), so this thumb is the
+// only scroll affordance.
+//
+// Styling lives in global.css under .page-scrollbar-thumb. When the Bend
+// canvas mode is active (html.bend-enabled) the CSS suppresses this thumb,
+// since Bend renders its own scrollbar.
+---
+
+<div class="page-scrollbar-thumb" aria-hidden="true" />
+
+<script>
+	(() => {
+		const CLASS = "page-scrollbar-thumb";
+		let thumb: HTMLElement | null = null;
+		let rafId = 0;
+		let hideTimer: number | null = null;
+
+		const findThumb = () =>
+			(thumb = document.querySelector<HTMLElement>("." + CLASS));
+
+		const measure = () => {
+			const el = thumb;
+			if (!el) return;
+
+			const doc = document.documentElement;
+			const maxScroll = Math.max(
+				doc.scrollHeight - window.innerHeight,
+				0,
+			);
+			const viewport = Math.max(window.innerHeight, 1);
+			const thumbHeight =
+				maxScroll > 0
+					? Math.max(
+							24,
+							Math.round(
+								(window.innerHeight /
+									Math.max(doc.scrollHeight, 1)) *
+									viewport,
+							),
+						)
+					: 0;
+			const travel = Math.max(0, viewport - thumbHeight);
+			const progress =
+				maxScroll > 0
+					? Math.min(1, window.scrollY / maxScroll)
+					: 0;
+
+			el.style.height = `${Math.min(thumbHeight, viewport)}px`;
+			el.style.transform = `translate3d(0, ${progress * travel}px, 0)`;
+		};
+
+		const schedule = () => {
+			if (rafId) return;
+			rafId = requestAnimationFrame(() => {
+				rafId = 0;
+				measure();
+			});
+		};
+
+		const reveal = () => {
+			const el = thumb;
+			// Keep hidden when the page can't scroll (thumb height is 0).
+			if (!el || el.offsetHeight === 0) return;
+			el.style.opacity = "1";
+			if (hideTimer !== null) window.clearTimeout(hideTimer);
+			hideTimer = window.setTimeout(() => {
+				el.style.opacity = "0";
+				hideTimer = null;
+			}, 700);
+		};
+
+		const onScroll = () => {
+			schedule();
+			reveal();
+		};
+		const onResize = schedule;
+		// View transitions swap the DOM — re-query and re-measure.
+		const onPageLoad = () => {
+			findThumb();
+			measure();
+		};
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onResize);
+		document.addEventListener("astro:page-load", onPageLoad);
+
+		findThumb();
+		measure();
+	})();
+</script>
