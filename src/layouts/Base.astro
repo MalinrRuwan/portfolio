@@ -9,6 +9,8 @@ import { profile } from "../data/profile";
 import { getOgImageUrl } from "../utils/seo";
 import "../styles/global.css";
 import Bend from "@/components/canvasui/Bend";
+import GithubCard from "@/components/ui/GithubCard";
+import TwitterCard from "@/components/ui/TwitterCard";
 import { ClientRouter } from "astro:transitions";
 interface Props {
     title?: string;
@@ -267,7 +269,7 @@ const year = new Date().getFullYear();
             </main>
 
             <footer
-                class="footer-canvas-wrap relative overflow-hidden mx-auto w-full max-w-site px-6 sm:px-10"
+                class="footer-canvas-wrap relative mx-auto w-full max-w-site px-6 sm:px-10"
             >
                 <canvas
                     id="footer-canvas"
@@ -277,23 +279,41 @@ const year = new Date().getFullYear();
                     class="relative z-10 mt-28 flex flex-col gap-3 border-t border-rule py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"
                 >
                     <p>&copy; {year} {siteTitle}</p>
-                    <div class="flex items-center gap-5">
+                    <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
                         {
-                            profile.socials.map((social) => (
-                                <a
-                                    href={social.url}
-                                    class="u-link"
-                                    {...(social.url.startsWith("http")
-                                        ? {
-                                              target: "_blank",
-                                              rel: "noopener noreferrer",
-                                          }
-                                        : {})}
-                                >
-                                    {social.label}
-                                </a>
-                            ))
-                        }Press X for a surprise
+                            profile.socials
+                                .filter(
+                                    (social) =>
+                                        !["GitHub", "Twitter"].includes(
+                                            social.label,
+                                        ),
+                                )
+                                .map((social) => (
+                                    <a
+                                        href={social.url}
+                                        class="u-link"
+                                        {...(social.url.startsWith("http")
+                                            ? {
+                                                  target: "_blank",
+                                                  rel: "noopener noreferrer",
+                                              }
+                                            : {})}
+                                    >
+                                        {social.label}
+                                    </a>
+                                ))
+                        }
+                        <GithubCard
+                            client:idle
+                            username="malinrruwan"
+                            name="Malin Dhamsara"
+                        />
+                        <TwitterCard
+                            client:idle
+                            username="malindhamsara"
+                            name="Malin Dhamsara"
+                        />
+                        <span>Press X for a surprise</span>
                     </div>
                 </div>
             </footer>
