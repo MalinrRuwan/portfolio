@@ -11,6 +11,7 @@ import "../styles/global.css";
 import Bend from "@/components/canvasui/Bend";
 import GithubCard from "@/components/ui/GithubCard";
 import TwitterCard from "@/components/ui/TwitterCard";
+import LinkedinCard from "@/components/ui/LinkedinCard";
 import { ClientRouter } from "astro:transitions";
 interface Props {
     title?: string;
@@ -268,9 +269,11 @@ const year = new Date().getFullYear();
                             profile.socials
                                 .filter(
                                     (social) =>
-                                        !["GitHub", "Twitter"].includes(
-                                            social.label,
-                                        ),
+                                        ![
+                                            "GitHub",
+                                            "Twitter",
+                                            "LinkedIn",
+                                        ].includes(social.label),
                                 )
                                 .map((social) => (
                                     <a
@@ -296,6 +299,14 @@ const year = new Date().getFullYear();
                             client:idle
                             username="malindhamsara"
                             name="Malin Dhamsara"
+                        />
+                        <LinkedinCard
+                            client:idle
+                            username="malindhamsara"
+                            name="Malin Dhamsara"
+                            headline="Developer & student — web, DevOps & ML"
+                            connections="500+"
+                            location="Colombo, Sri Lanka"
                         />
                         <span>Press X for a surprise</span>
                     </div>
