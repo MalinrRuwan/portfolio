@@ -1,0 +1,76 @@
+---
+/**
+ * Minimal shell for standalone app pages (no site nav / Bend canvas).
+ * Keeps the shared head, fonts, scrollbar and footer.
+ */
+import { getSiteSettings } from "emdash";
+import { EmDashHead } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import { Font } from "astro:assets";
+import PageScrollbar from "../components/PageScrollbar.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { getOgImageUrl } from "../utils/seo";
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+}
+
+const { title, description, image } = Astro.props;
+const settings = await getSiteSettings();
+const siteTitle = settings?.title || "Malin Dhamsara";
+const siteDescription = settings?.tagline || "";
+const ogImage =
+	image ?? getOgImageUrl(settings?.seo?.defaultOgImage?.url, Astro.url.origin);
+
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: "custom",
+	pageType: "website",
+	title,
+	pageTitle: title,
+	description: description || siteDescription,
+	canonical: Astro.url.href,
+	image: ogImage,
+	seo: { ogImage },
+	siteName: siteTitle,
+});
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{title}</title>
+		<EmDashHead page={pageCtx} />
+		<meta
+			name="theme-color"
+			content="#fdfcfa"
+			media="(prefers-color-scheme: light)"
+		/>
+		<meta
+			name="theme-color"
+			content="#131110"
+			media="(prefers-color-scheme: dark)"
+		/>
+		<Font cssVariable="--font-inter" preload />
+		<Font cssVariable="--font-crimson" preload />
+		<link rel="icon" href="/favicon.ico" sizes="48x48" type="image/x-icon" />
+		<link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+		<script is:inline>
+			document.documentElement.classList.remove("no-js");
+		</script>
+	</head>
+	<body class="flex min-h-svh flex-col">
+		<slot />
+
+		<div class="mt-auto">
+			<SiteFooter siteTitle={siteTitle} />
+		</div>
+
+		<PageScrollbar />
+	</body>
+</html>

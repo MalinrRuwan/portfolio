@@ -1,0 +1,75 @@
+---
+/**
+ * Site-wide footer — shared by Base.astro and the standalone app shells so
+ * every page ends the same way (socials, hover cards, surprise hint).
+ */
+import GithubCard from "@/components/ui/GithubCard";
+import TwitterCard from "@/components/ui/TwitterCard";
+import LinkedinCard from "@/components/ui/LinkedinCard";
+import { profile } from "../data/profile";
+
+interface Props {
+	siteTitle: string;
+}
+
+const { siteTitle } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer
+	class="footer-canvas-wrap relative mx-auto w-full max-w-site px-6 sm:px-10"
+>
+	<canvas
+		id="footer-canvas"
+		class="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-500"
+		aria-hidden="true"></canvas>
+	<div
+		class="relative z-10 mt-28 flex flex-col gap-3 border-t border-rule py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"
+	>
+		<p>&copy; {year} {siteTitle}</p>
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+			{
+				profile.socials
+					.filter(
+						(social) =>
+							!["GitHub", "Twitter", "LinkedIn"].includes(
+								social.label,
+							),
+					)
+					.map((social) => (
+						<a
+							href={social.url}
+							class="u-link"
+							{...(social.url.startsWith("http")
+								? {
+										target: "_blank",
+										rel: "noopener noreferrer",
+									}
+								: {})}
+						>
+							{social.label}
+						</a>
+					))
+			}
+			<GithubCard
+				client:idle
+				username="malinrruwan"
+				name="Malin Dhamsara"
+			/>
+			<TwitterCard
+				client:idle
+				username="malindhamsara"
+				name="Malin Dhamsara"
+			/>
+			<LinkedinCard
+				client:idle
+				username="malindhamsara"
+				name="Malin Dhamsara"
+				headline="Developer & student — web, DevOps & ML"
+				connections="500+"
+				location="Colombo, Sri Lanka"
+			/>
+			<span>Press X for a surprise</span>
+		</div>
+	</div>
+</footer>
