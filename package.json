@@ -40,5 +40,9 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.4",
     "typescript": "^6.0.0"
+  },
+  "patchedDependencies": {
+    "emdash@0.36.0": "patches/emdash@0.36.0.patch",
+    "@emdash-cms/admin@0.32.0": "patches/@emdash-cms%2Fadmin@0.32.0.patch"
   }
 }

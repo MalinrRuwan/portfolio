@@ -1,0 +1,14 @@
+diff --git a/dist/media-allowlist-D35v7bmL.mjs b/dist/media-allowlist-D35v7bmL.mjs
+index 659e00cc06677d902d402127c55f3928766a32b2..92c2110ef75fdf95504f89b49366098c3ace85d6 100644
+--- a/dist/media-allowlist-D35v7bmL.mjs
++++ b/dist/media-allowlist-D35v7bmL.mjs
+@@ -22,7 +22,8 @@ const GLOBAL_UPLOAD_ALLOWLIST = [
+ 	"image/avif",
+ 	"video/",
+ 	"audio/",
+-	"application/pdf"
++	"application/pdf",
++	"application/x-apple-diskimage"
+ ];
+ /**
+ * Resolve the MIME allowlist for a specific field.

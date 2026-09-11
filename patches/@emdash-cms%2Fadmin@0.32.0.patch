@@ -1,0 +1,21 @@
+diff --git a/dist/index.js b/dist/index.js
+index 9f814f90dc2123f3c461bb36d00eb97fd8fba72a..801b4bb314c0aabde2667bb5ef4ec4980b7a3161 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -3608,6 +3608,7 @@ const EXTENSION_TO_MIME = {
+ 	".zip": "application/zip",
+ 	".tar": "application/x-tar",
+ 	".gz": "application/gzip",
++	".dmg": "application/x-apple-diskimage",
+ 	".csv": "text/csv",
+ 	".doc": "application/msword",
+ 	".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+@@ -25055,7 +25056,7 @@ function MediaLibrary({ items = [], isLoading, onUpload, onItemUpdated, hasMore,
+ 							ref: fileInputRef,
+ 							type: "file",
+ 							multiple: true,
+-							accept: "image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx",
++							accept: "image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.dmg",
+ 							className: "sr-only",
+ 							onChange: handleFileSelect,
+ 							"aria-label": _t({

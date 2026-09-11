@@ -51,6 +51,9 @@ export default defineConfig({
     emdash({
       database: d1({ binding: "DB", session: "auto" }),
       storage: r2({ binding: "MEDIA" }),
+      // DMG installers are larger than EmDash's 50 MB default; 100 MB is
+      // Cloudflare Workers' request-body ceiling.
+      maxUploadSize: 100 * 1024 * 1024,
       objectCache: kvCache({ binding: "CACHE" }),
       mediaProviders: [
         cloudflareImages({
