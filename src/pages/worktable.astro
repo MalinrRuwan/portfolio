@@ -12,7 +12,7 @@ const app = {
 	name: "Worktable",
 	version: "0.1.0",
 	// TODO: drop the DMG in public/downloads/ or point this at your host.
-	downloadUrl: "/downloads/Worktable-0.1.0.dmg",
+	downloadUrl: "https://malindhamsara.dev/_emdash/api/media/file/01M27NA3CWCDZ2JZ6H3GEQWQY7.01M27NA54YD3WWRZ81QJR395CA.dmg",
 };
 
 /**
@@ -70,10 +70,7 @@ Astro.response.headers.set(
 				</div>
 
 				<div class="text-center">
-					<p
-						class="wt-rise kicker text-[#faf9f7]/60"
-						style="--wt-delay: 90ms"
-					>
+					<p class="wt-rise kicker text-[#faf9f7]/60" style="--wt-delay: 90ms">
 						For macOS
 					</p>
 					<h1 class="wt-rise display mt-5" style="--wt-delay: 180ms">
@@ -123,45 +120,6 @@ Astro.response.headers.set(
 									playsinline
 									preload="metadata"
 								/>
-								<button
-									type="button"
-									class="wt-film-sound"
-									data-wt-sound
-									data-muted="true"
-									aria-label="Unmute the launch film"
-								>
-									<svg
-										class="wt-sound-off"
-										viewBox="0 0 24 24"
-										width="16"
-										height="16"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.7"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										aria-hidden="true"
-									>
-										<path d="M11 5 6.5 9H3v6h3.5L11 19z" />
-										<path d="m16 9 5 6M21 9l-5 6" />
-									</svg>
-									<svg
-										class="wt-sound-on"
-										viewBox="0 0 24 24"
-										width="16"
-										height="16"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.7"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										aria-hidden="true"
-									>
-										<path d="M11 5 6.5 9H3v6h3.5L11 19z" />
-										<path d="M15.5 8.5a5 5 0 0 1 0 7" />
-										<path d="M18.5 6a9 9 0 0 1 0 12" />
-									</svg>
-								</button>
 							</>
 						) : (
 							<div class="wt-film-media wt-film-placeholder">
@@ -178,9 +136,7 @@ Astro.response.headers.set(
 											<path d="M8 5v14l11-7z" />
 										</svg>
 									</span>
-									<p class="kicker mt-4">
-										Launch film &middot; 16:9
-									</p>
+									<p class="kicker mt-4">Launch film &middot; 16:9</p>
 								</div>
 							</div>
 						)
@@ -202,8 +158,8 @@ Astro.response.headers.set(
 						Download for macOS.
 					</h2>
 					<p class="mt-4 text-lg/8 text-muted">
-						Open the disk image, drag {app.name} into Applications, and
-						you&rsquo;re set.
+						Open the disk image, drag {app.name} into Applications, and you&rsquo;re
+						set.
 					</p>
 				</div>
 
@@ -220,10 +176,10 @@ Astro.response.headers.set(
 						>
 							<path
 								d="M17.05 12.54c-.03-2.6 2.12-3.84 2.22-3.9-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.9-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.24 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.38.81 1.4-.02 2.28-1.27 3.14-2.52.99-1.45 1.4-2.85 1.42-2.92-.03-.01-2.72-1.04-2.75-4.14z"
-							/>
+							></path>
 							<path
 								d="M14.4 4.6c.72-.87 1.2-2.08 1.07-3.29-1.03.04-2.28.69-3.02 1.56-.66.77-1.24 2-1.09 3.18 1.15.09 2.33-.58 3.04-1.45z"
-							/>
+							></path>
 						</svg>
 						Download for macOS
 					</a>
