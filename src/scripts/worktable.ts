@@ -47,11 +47,17 @@ function build({ section, stage, frame, video }: FilmParts) {
 			borderRadius: 12,
 		};
 	};
-	const full = () => ({
-		width: stage.clientWidth,
-		height: stage.clientHeight,
-		borderRadius: 0,
-	});
+	const full = () => {
+		const width = stage.clientWidth;
+		const height = stage.clientHeight;
+		// Portrait viewports (phones, tablets): grow to the full width but
+		// keep the 16:9 frame, so the film is shown whole instead of being
+		// cropped down to a slice of its centre. Landscape stays edge-to-edge.
+		if (height > width) {
+			return { width, height: (width * 9) / 16, borderRadius: 0 };
+		}
+		return { width, height, borderRadius: 0 };
+	};
 	// The boxed frame rests a touch above the viewport centre and settles to
 	// the exact centre as it expands, so the full-screen phase stays true.
 	const restY = () => -Math.round(stage.clientHeight * 0.05);
