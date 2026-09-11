@@ -41,6 +41,56 @@ const isBypassCache = (pathname: string) =>
 
 const edgeCache = (caches as CacheStorage & { default: Cache }).default;
 
+/**
+ * Media files are immutable (content-addressed storage keys) and are the only
+ * anonymous bytes under /_emdash. Cache them explicitly at the edge: EmDash
+ * attaches a D1 session bookmark via Set-Cookie, which makes the response look
+ * private and the edge skip it (cf-cache-status: BYPASS). The bookmark only
+ * matters for authenticated admin reads, so it is safe to drop here.
+ */
+async function serveMediaFile(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContextLike,
+): Promise<Response> {
+  if (request.method === "GET") {
+    const cached = await edgeCache.match(request);
+    if (cached) {
+      const headers = new Headers(cached.headers);
+      headers.set("X-EmDash-Media-Cache", "HIT");
+      return new Response(cached.body, {
+        status: cached.status,
+        statusText: cached.statusText,
+        headers,
+      });
+    }
+  }
+
+  const response = await emdashWorker.fetch(request, env, ctx);
+  if (request.method !== "GET" || !response.ok || !response.body) {
+    return response;
+  }
+
+  const headers = new Headers(response.headers);
+  headers.delete("set-cookie");
+  headers.set("Cache-Control", "public, max-age=31536000, immutable");
+
+  const cacheable = new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+  ctx.waitUntil(edgeCache.put(request, cacheable.clone()));
+
+  const marked = new Headers(headers);
+  marked.set("X-EmDash-Media-Cache", "MISS");
+  return new Response(cacheable.body, {
+    status: cacheable.status,
+    statusText: cacheable.statusText,
+    headers: marked,
+  });
+}
+
 async function serveOgImage(
   request: Request,
   env: Env,
@@ -103,6 +153,10 @@ export default {
       }
 
       return serveOgImage(request, env, ctx);
+    }
+
+    if (url.pathname.startsWith(MEDIA_FILE_PREFIX)) {
+      return serveMediaFile(request, env, ctx);
     }
 
     const response = await emdashWorker.fetch(request, env, ctx);
