@@ -28,7 +28,11 @@
   },
   "cache": {
     "enabled": true,
-    "cross_version_cache": true,
+    // Per-version cache. With this off (the default), a deploy starts from an
+    // empty cache; with it on, cached HTML from a previous build keeps being
+    // served after the deploy and points at asset hashes that no longer exist
+    // (404 stylesheets/scripts). Content edits still purge via Astro.cache tags.
+    "cross_version_cache": false,
   },
   "triggers": {
     "crons": ["* * * * *"],
