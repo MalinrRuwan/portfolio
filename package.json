@@ -11,7 +11,7 @@
     "seed": "seed/seed.json"
   },
   "scripts": {
-    "dev": "emdash dev",
+    "dev": "astro dev",
     "build": "astro build",
     "preview": "astro build && wrangler dev",
     "deploy": "wrangler deploy",
@@ -20,13 +20,13 @@
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.4",
     "@astrojs/react": "^6.0.1",
-    "@emdash-cms/cloudflare": "^0.36.0",
+    "@emdash-cms/cloudflare": "^1.0.1",
     "@portfolio/emdash-callout": "workspace:*",
     "@portfolio/emdash-status-images": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.0",
     "cn": "^0.2.4",
-    "emdash": "^0.36.0",
+    "emdash": "^1.0.1",
     "gsap": "^3.15.0",
     "motion": "^13.2.0",
     "prettier": "^3.9.6",
@@ -42,7 +42,7 @@
     "typescript": "^6.0.0"
   },
   "patchedDependencies": {
-    "emdash@0.36.0": "patches/emdash@0.36.0.patch",
-    "@emdash-cms/admin@0.32.0": "patches/@emdash-cms%2Fadmin@0.32.0.patch"
+    "emdash@1.0.1": "patches/emdash@1.0.1.patch",
+    "@emdash-cms/admin@1.0.1": "patches/@emdash-cms%2Fadmin@1.0.1.patch"
   }
 }

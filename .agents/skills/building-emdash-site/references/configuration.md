@@ -211,8 +211,8 @@ For Cloudflare, replace `@astrojs/node` with `@astrojs/cloudflare` and add `@emd
 ## Dev Server
 
 ```bash
-npx emdash dev              # Start dev server (runs migrations, applies seed)
-npx emdash dev --types      # Start and generate types from schema
+npx astro dev               # Start dev server (runtime runs migrations, applies seed)
+npx emdash types            # Generate types from the schema
 ```
 
 The admin UI is at `http://localhost:4321/_emdash/admin`. On first run, you'll go through setup to create an admin account.

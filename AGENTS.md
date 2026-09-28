@@ -5,8 +5,8 @@ Personal portfolio and blog built on the EmDash CMS (Astro), styled with Tailwin
 ## Stack
 
 - **Runtime / package manager:** Bun (latest). Use `bun` / `bunx` for everything.
-- **CMS:** [EmDash](https://github.com/emdash-cms/emdash) v0.29+ — full-stack TypeScript CMS as an Astro integration. Admin panel at `/_emdash/admin`.
-- **Framework:** Astro 7, SSR (`output: "server"`), `@astrojs/node` adapter.
+- **CMS:** [EmDash](https://github.com/emdash-cms/emdash) v1.0+ — full-stack TypeScript CMS as an Astro integration. Admin panel at `/_emdash/admin`.
+- **Framework:** Astro 7, SSR (`output: "server"`), `@astrojs/cloudflare` adapter (Cloudflare Workers with D1 + R2 + KV bindings).
 - **Styling:** Tailwind CSS v4 (CSS-first config via `@theme` and `@utility` in `src/styles/global.css`).
 - **Design direction:** quiet editorial minimal — warm paper background, near-black ink, hairline rules, one serif accent (Crimson Text italic), numbered section kickers.
 - **Fonts:** Inter (body/UI), Crimson Text italic (accent) via Astro Fonts API.
@@ -15,18 +15,18 @@ Personal portfolio and blog built on the EmDash CMS (Astro), styled with Tailwin
 
 ```bash
 bun install            # install dependencies
-bun run dev            # EmDash dev server (migrations + seed + Astro)
+bun run dev            # Astro dev server (EmDash migrations, seed, admin)
 bun run build          # production build
 bun run preview        # preview production build
-bunx emdash types      # regenerate TypeScript types from live schema
-bunx emdash dev        # same as bun run dev, but runs migrations automatically
+bunx emdash types      # regenerate TypeScript types from the database schema
+bunx emdash migrate    # check or apply deployment-managed EmDash migrations
 ```
 
 ## Key files
 
 | File                                 | Purpose                                                                          |
 | ------------------------------------ | -------------------------------------------------------------------------------- |
-| `astro.config.mjs`                   | Astro + EmDash integration, SQLite + local storage, fonts                        |
+| `astro.config.mjs`                   | Astro + EmDash integration, Cloudflare D1/R2/KV bindings, fonts                  |
 | `src/live.config.ts`                 | EmDash live-collection loader (boilerplate)                                      |
 | `seed/seed.json`                     | Initial schema + sample content (collections, taxonomies, menus)                 |
 | `src/data/profile.ts`                | Structured resume/personal data (about, stack, volunteering, education, contact) |
@@ -64,7 +64,8 @@ The `seed/seed.json` only populates an empty database. After setup, editors can 
 
 - **Figma MCP** is configured in `.kimi-code/mcp.json` (local Dev Mode server at `http://127.0.0.1:3845/mcp`, requires Figma desktop app running). MCP servers connect at session start — restart the session after editing `mcp.json`.
 - **agent-browser** is used for screenshots. The Node daemon in the installed version is broken in this environment, so always set `AGENT_BROWSER_NATIVE=1` before agent-browser commands.
-- EmDash runs locally on Node.js + SQLite; no Cloudflare account is required. Do not switch the Astro config to the Cloudflare adapter unless explicitly asked.
+- EmDash runs on Cloudflare (D1 database, R2 media, KV object cache). Local dev emulates the bindings through Wrangler; no Cloudflare account is required for `bun run dev`.
+- DMG uploads depend on the Bun patches in `patches/` (applied to `emdash` and `@emdash-cms/admin`). After upgrading either package, regenerate them: `bun patch <pkg>` → edit `node_modules/<pkg>` → `bun patch --commit 'node_modules/<pkg>'`.
 
 ## Responsive navbar
 

@@ -8,8 +8,8 @@
     "./admin": "./src/admin.tsx"
   },
   "peerDependencies": {
-    "@emdash-cms/admin": "^0.32.0",
-    "emdash": "^0.32.0",
+    "@emdash-cms/admin": "^1.0.1",
+    "emdash": "^1.0.1",
     "react": "^19.0.0"
   }
 }
