@@ -1,3 +1,6 @@
+diff --git a/node_modules/emdash/.bun-tag-276d17b755fc980c b/.bun-tag-276d17b755fc980c
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/dist/media-allowlist-isqF1gAh.mjs b/dist/media-allowlist-isqF1gAh.mjs
 index 55c0a353f8bbdd11478385ecbda1e024fbc77157..088493a1399d95b65557afbf71b1c62da59ff2ab 100644
 --- a/dist/media-allowlist-isqF1gAh.mjs
@@ -12,3 +15,45 @@ index 55c0a353f8bbdd11478385ecbda1e024fbc77157..088493a1399d95b65557afbf71b1c62d
  ];
  /**
  * Resolve the MIME allowlist for a specific field.
+diff --git a/dist/redirect-BvFKh8Sz.mjs b/dist/redirect-BvFKh8Sz.mjs
+index f5860f1dddd3675a2bc28e76947fae0608d2ab61..72b2c1ab60f9c490a996e331d20a2223e85fc358 100644
+--- a/dist/redirect-BvFKh8Sz.mjs
++++ b/dist/redirect-BvFKh8Sz.mjs
+@@ -13,6 +13,16 @@ import { ulid } from "ulidx";
+ * the anonymous request path.
+ */
+ const MAX_404_LOG_ROWS = 1e4;
++/**
++* Minimum interval between 404-log eviction sweeps. The eviction statement is
++* a full-table scan, and the Cloudflare scheduled handler runs system cleanup
++* on every cron tick, so a minute cron without this throttle reads the whole
++* table every minute. The cap is soft, so an hour of extra growth is harmless.
++* Kept on globalThis with Symbol.for so duplicated bundle chunks share one
++* throttle (same pattern as the D1 session guard).
++*/
++const CLEANUP_404_LOG_INTERVAL_MS = 36e5;
++const LAST_404_LOG_CLEANUP_AT = Symbol.for("emdash:404-log-cleanup-at");
+ /** Max stored length for the `Referer` header — truncated on insert. */
+ const REFERRER_MAX_LENGTH = 512;
+ /** Max stored length for the `User-Agent` header — truncated on insert. */
+@@ -342,8 +352,20 @@ var RedirectRepository = class RedirectRepository {
+ 	* getting hit stays in the table even if it was first seen long ago.
+ 	*
+ 	* Called by scheduled system cleanup, never by the anonymous request path.
++	*
++	* The scheduled handler may call this on every cron tick, so the sweep is
++	* throttled to once per hour per isolate. Before the DELETE runs, a LIMIT 1
++	* OFFSET probe walks the `last_seen_at` index and skips it while the table
++	* is under the cap, so an under-cap sweep never scans for victims.
+ 	*/
+ 	async cleanup404Log() {
++		const cleanupState = globalThis;
++		const lastCleanupAt = cleanupState[LAST_404_LOG_CLEANUP_AT] ?? 0;
++		const now = Date.now();
++		if (now - lastCleanupAt < CLEANUP_404_LOG_INTERVAL_MS) return 0;
++		cleanupState[LAST_404_LOG_CLEANUP_AT] = now;
++		const overCap = await this.db.selectFrom("_emdash_404_log").select("id").orderBy("last_seen_at", "desc").limit(1).offset(MAX_404_LOG_ROWS).executeTakeFirst();
++		if (!overCap) return 0;
+ 		const result = await this.db.deleteFrom("_emdash_404_log").where("id", "not in", this.db.selectFrom("_emdash_404_log").select("id").orderBy("last_seen_at", "desc").orderBy("id", "desc").limit(MAX_404_LOG_ROWS)).executeTakeFirst();
+ 		return Number(result.numDeletedRows);
+ 	}
