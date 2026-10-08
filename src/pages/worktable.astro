@@ -10,17 +10,17 @@ import WavesBackground from "../components/worktable/WavesBackground.astro";
  */
 const app = {
 	name: "Worktable",
-	version: "0.1.0",
-	// TODO: drop the DMG in public/downloads/ or point this at your host.
-	downloadUrl: "https://malindhamsara.dev/_emdash/api/media/file/01M27NA3CWCDZ2JZ6H3GEQWQY7.01M27NA54YD3WWRZ81QJR395CA.dmg",
+	version: "1.3",
+	downloadUrl: "https://github.com/MalinrRuwan/worktable/releases/download/v1.3.0/Worktable-1.3.0.dmg",
 };
 
 /**
- * Launch film — uploaded to EmDash media. Change this URL to swap the film;
- * clearing it falls back to the reserved 16:9 placeholder.
+ * Launch film — served from public/worktable. Swap the file (or point src
+ * anywhere) to change the film; clearing it falls back to the reserved
+ * 16:9 placeholder.
  */
 const launchVideo = {
-	src: "https://malindhamsara.dev/_emdash/api/media/file/01M27M0TVYRDVZ05KTD20Q2JBN.01M27M0YMVTBA3VRJRM2Q2V6P4.mp4",
+	src: "/worktable/WorktableLaunch.mp4",
 	poster: "",
 };
 
@@ -51,21 +51,15 @@ Astro.response.headers.set(
 			>
 				<div class="wt-rise" style="--wt-delay: 0ms">
 					<div class="wt-float">
-						<picture>
-							<source
-								srcset="/worktable/logo-dark.png"
-								media="(prefers-color-scheme: dark)"
-							/>
-							<img
-								src="/worktable/logo.png"
-								alt="Worktable app icon"
-								width="1024"
-								height="1024"
-								decoding="async"
-								fetchpriority="high"
-								class="h-40 w-40 drop-shadow-[0_30px_52px_rgba(0,0,0,0.4)] sm:h-52 sm:w-52"
-							/>
-						</picture>
+						<img
+							src="/worktable/logo.png"
+							alt="Worktable app icon"
+							width="1024"
+							height="1024"
+							decoding="async"
+							fetchpriority="high"
+							class="h-40 w-40 drop-shadow-[0_30px_52px_rgba(0,0,0,0.4)] sm:h-52 sm:w-52"
+						/>
 					</div>
 				</div>
 
