@@ -35,6 +35,6 @@
     "cross_version_cache": false,
   },
   "triggers": {
-    "crons": ["* * * * *"],
+    "crons": ["*/15 * * * *"],
   },
 }
