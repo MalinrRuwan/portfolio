@@ -7,7 +7,7 @@ export const GET: APIRoute = async ({ site, url }) => {
   const siteTitle = settings?.title || "Malin Dhamsara";
   const siteDescription = settings?.tagline || "";
 
-  const { entries: posts } = await getEmDashCollection("posts", {
+  const { entries: posts } = await getEmDashCollection("blogs", {
     status: "published",
     orderBy: { published_at: "desc" },
     limit: 20,

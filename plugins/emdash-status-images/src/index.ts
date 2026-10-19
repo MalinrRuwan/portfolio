@@ -7,7 +7,7 @@ const MEDIA_FILE_PATH = "/_emdash/api/media/file/";
 
 type StatusImageEntry = {
   id: string;
-  collection: "projects" | "posts";
+  collection: "projects" | "blogs";
   slug: string | null;
   status: string;
   title: string;
@@ -138,7 +138,7 @@ export function createPlugin() {
 
           const [projects, posts] = await Promise.all([
             content.list("projects", { limit: 100 }),
-            content.list("posts", { limit: 100 }),
+            content.list("blogs", { limit: 100 }),
           ]);
 
           const resolveMediaUrl = async (id: string) => {
@@ -160,7 +160,7 @@ export function createPlugin() {
                 toStatusImageEntry(entry, "projects", resolveMediaUrl),
               ),
               ...posts.items.map((entry) =>
-                toStatusImageEntry(entry, "posts", resolveMediaUrl),
+                toStatusImageEntry(entry, "blogs", resolveMediaUrl),
               ),
             ])
           ).sort((left, right) => left.title.localeCompare(right.title));

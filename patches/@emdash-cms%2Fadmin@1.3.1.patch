@@ -1,0 +1,21 @@
+diff --git a/dist/index.js b/dist/index.js
+index 0476f6e0452247a05def091a22885f5e4ccb1cfa..672f5a3ff03114518afabb14c12dc1334818a55f 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -5489,6 +5489,7 @@ const EXTENSION_TO_MIME = {
+ 	".zip": "application/zip",
+ 	".tar": "application/x-tar",
+ 	".gz": "application/gzip",
++	".dmg": "application/x-apple-diskimage",
+ 	".csv": "text/csv",
+ 	".doc": "application/msword",
+ 	".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+@@ -53191,7 +53192,7 @@ function MediaFolderDialog({ open, folder, onClose, onCreate, onRename, onDelete
+ 
+ //#endregion
+ //#region src/components/MediaUploadDialog.tsx
+-const LOCAL_MEDIA_UPLOAD_ACCEPT = "image/png,image/jpeg,image/gif,image/webp,image/avif,image/jxl,.jxl,video/*,audio/*,application/pdf";
++const LOCAL_MEDIA_UPLOAD_ACCEPT = "image/png,image/jpeg,image/gif,image/webp,image/avif,image/jxl,.jxl,video/*,audio/*,application/pdf,application/x-apple-diskimage";
+ function FileKindIcon({ file }) {
+ 	const className = "h-5 w-5";
+ 	if (file.type.startsWith("image/")) return /* @__PURE__ */ jsx(FileImage, {

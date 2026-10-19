@@ -18,7 +18,7 @@ const [
 	{ entries: projects, cacheHint: projectsCacheHint },
 ] = await Promise.all([
 	getSiteSettings(),
-	getEmDashCollection("posts", {
+	getEmDashCollection("blogs", {
 		status: "published",
 		orderBy: { published_at: "desc" },
 		limit: 10,

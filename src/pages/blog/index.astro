@@ -4,7 +4,7 @@ import Base from "../../layouts/Base.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import PostRow from "../../components/PostRow.astro";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
+const { entries: posts, cacheHint } = await getEmDashCollection("blogs", {
     status: "published",
 	orderBy: { published_at: "desc" },
 });

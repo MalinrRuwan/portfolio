@@ -223,7 +223,7 @@ const STATUS_IMAGES_CSS = `
 
 type StatusImageEntry = {
   id: string;
-  collection: "projects" | "posts";
+  collection: "projects" | "blogs";
   slug: string | null;
   status: string;
   title: string;
@@ -685,7 +685,7 @@ export function StatusImagesPage() {
   const projects = visibleEntries.filter(
     (entry) => entry.collection === "projects",
   );
-  const posts = visibleEntries.filter((entry) => entry.collection === "posts");
+  const posts = visibleEntries.filter((entry) => entry.collection === "blogs");
 
   return (
     <section className="status-images">

@@ -24,7 +24,7 @@ export default defineConfig({
   },
   // Aggressive edge caching: public content pages are served from Cloudflare's
   // Workers Cache for 24h (stale-while-revalidate for 7 days). EmDash tags
-  // each response (posts/projects + path) via Astro.cache.set(), so content
+  // each response (blogs/projects + path) via Astro.cache.set(), so content
   // edits purge exactly the affected pages — long TTLs stay safe.
   routeRules: {
     "/": { maxAge: 86400, swr: 604800 },

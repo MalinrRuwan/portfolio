@@ -65,9 +65,9 @@
       ]
     },
     {
-      "slug": "posts",
-      "label": "Posts",
-      "labelSingular": "Post",
+      "slug": "blogs",
+      "label": "Blogs",
+      "labelSingular": "Blog",
       "supports": ["drafts", "revisions", "search", "seo"],
       "fields": [
         {
@@ -412,7 +412,7 @@
         }
       }
     ],
-    "posts": [
+    "blogs": [
       {
         "id": "post-own-your-tools",
         "slug": "own-your-tools",

@@ -1,0 +1,52 @@
+diff --git a/dist/media-allowlist-CpmqBbIQ.mjs b/dist/media-allowlist-CpmqBbIQ.mjs
+index 778ba8e92901ce44b39e53d0cd342e4add135e17..aabdedcac5d65aebfe18ab99ec0711a77369c1d7 100644
+--- a/dist/media-allowlist-CpmqBbIQ.mjs
++++ b/dist/media-allowlist-CpmqBbIQ.mjs
+@@ -23,7 +23,8 @@ const GLOBAL_UPLOAD_ALLOWLIST = [
+ 	"image/jxl",
+ 	"video/",
+ 	"audio/",
+-	"application/pdf"
++	"application/pdf",
++	"application/x-apple-diskimage"
+ ];
+ /**
+ * Resolve the MIME allowlist for a specific field.
+diff --git a/dist/redirect-DcmNMvOs.mjs b/dist/redirect-DcmNMvOs.mjs
+index 1699f1b8e5fec1f7f46c31e7f80a0c4fa4df19cd..4e95c92bc8717e64a09b71e267ffdb669b2af833 100644
+--- a/dist/redirect-DcmNMvOs.mjs
++++ b/dist/redirect-DcmNMvOs.mjs
+@@ -13,6 +13,16 @@ import { ulid } from "ulidx";
+ * the anonymous request path.
+ */
+ const MAX_404_LOG_ROWS = 1e4;
++/**
++* Minimum interval between 404-log eviction sweeps. Called by scheduled system
++* cleanup, which the Cloudflare scheduled handler runs on every cron tick, so a
++* minute cron without this throttle walks the `last_seen_at` index once a
++* minute for nothing. The cap is soft, so an hour of extra growth is harmless.
++* Kept on globalThis with Symbol.for so duplicated bundle chunks share one
++* throttle (same pattern as the D1 session guard).
++*/
++const CLEANUP_404_LOG_INTERVAL_MS = 36e5;
++const LAST_404_LOG_CLEANUP_AT = Symbol.for("emdash:404-log-cleanup-at");
+ /** Max stored length for the `Referer` header — truncated on insert. */
+ const REFERRER_MAX_LENGTH = 512;
+ /** Max stored length for the `User-Agent` header — truncated on insert. */
+@@ -347,8 +357,16 @@ var RedirectRepository = class RedirectRepository {
+ 	* getting hit stays in the table even if it was first seen long ago.
+ 	*
+ 	* Called by scheduled system cleanup, never by the anonymous request path.
++	*
++	* The scheduled handler may call this on every cron tick, so the sweep is
++	* throttled to once per hour per isolate.
+ 	*/
+ 	async cleanup404Log() {
++		const cleanupState = globalThis;
++		const lastCleanupAt = cleanupState[LAST_404_LOG_CLEANUP_AT] ?? 0;
++		const now = Date.now();
++		if (now - lastCleanupAt < CLEANUP_404_LOG_INTERVAL_MS) return 0;
++		cleanupState[LAST_404_LOG_CLEANUP_AT] = now;
+ 		const probe = await this.db.selectFrom(this.db.selectFrom("_emdash_404_log").select(sql`1`.as("one")).limit(MAX_404_LOG_ROWS + 1).as("sample")).select(({ fn }) => fn.countAll().as("count")).executeTakeFirstOrThrow();
+ 		if (Number(probe.count) <= MAX_404_LOG_ROWS) return 0;
+ 		const result = await this.db.deleteFrom("_emdash_404_log").where("id", "not in", this.db.selectFrom("_emdash_404_log").select("id").orderBy("last_seen_at", "desc").orderBy("id", "desc").limit(MAX_404_LOG_ROWS)).executeTakeFirst();
