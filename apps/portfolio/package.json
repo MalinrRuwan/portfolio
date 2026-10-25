@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "cf dev",
     "build": "cf build",
-    "deploy": "cf deploy",
+    "deploy": "cf build && cf deploy --prebuilt --mode production",
     "typecheck": "astro check",
     "types": "emdash types",
     "migrate": "emdash migrate"
