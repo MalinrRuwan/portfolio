@@ -18,7 +18,14 @@ const emdashAdminDirectory = realpathSync(
 
 export default defineConfig({
   output: "server",
-  adapter: cloudflare(),
+  adapter: cloudflare(
+    {
+      imageService: {
+        build: 'compile',
+        runtime: 'cloudflare-binding'
+      }
+    }
+  ),
   cache: {
     provider: cacheCloudflare(),
   },
