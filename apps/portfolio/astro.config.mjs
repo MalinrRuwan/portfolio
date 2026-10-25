@@ -11,6 +11,8 @@ import emdash from "emdash/astro";
 import { calloutPlugin } from "@portfolio/emdash-callout";
 import { statusImagesPlugin } from "@portfolio/emdash-status-images";
 
+const projectRoot = dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = resolve(projectRoot, "../..");
 const emdashEntry = fileURLToPath(import.meta.resolve("emdash"));
 const emdashAdminDirectory = realpathSync(
   resolve(dirname(emdashEntry), "../../@emdash-cms/admin"),
@@ -44,12 +46,23 @@ export default defineConfig({
   image: {
     layout: "constrained",
     responsiveStyles: true,
+    // EmDash media URLs are absolute (https://<host>/_emdash/api/media/...).
+    // Astro only hands absolute URLs to the image service when their host is
+    // authorized here; otherwise it passes the original URL through and the
+    // Cloudflare IMAGES binding never runs. Keep the production hosts plus
+    // localhost for `cf dev`.
+    domains: [
+      "malindhamsara.dev",
+      "portfolio.maliniqrub.workers.dev",
+      "localhost",
+      "127.0.0.1",
+    ],
   },
   vite: {
     plugins: [tailwindcss()],
     server: {
       fs: {
-        allow: [process.cwd(), emdashAdminDirectory],
+        allow: [workspaceRoot, emdashAdminDirectory],
       },
     },
   },
@@ -65,6 +78,7 @@ export default defineConfig({
       mediaProviders: [
         cloudflareImages({
           accountId: import.meta.env.CF_ACCOUNT_ID,
+          accountHash: import.meta.env.CF_IMAGES_ACCOUNT_HASH,
           apiToken: import.meta.env.CF_IMAGES_TOKEN,
         }),
       ],

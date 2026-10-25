@@ -1,50 +1,23 @@
 {
-  "name": "portfolio",
+  "name": "portfolio-monorepo",
   "version": "0.0.3",
   "private": true,
   "type": "module",
   "workspaces": [
+    "apps/*",
     "plugins/*"
   ],
-  "emdash": {
-    "label": "Portfolio",
-    "seed": "seed/seed.json"
-  },
   "overrides": {
-    "zod": "4.5.4"
+    "zod": "4.5.4",
+    "@astrojs/cloudflare": "15.0.0-beta.3"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro build && wrangler dev",
-    "deploy": "cf deploy",
-    "typecheck": "astro check"
-  },
-  "dependencies": {
-    "@astrojs/cloudflare": "^14.1.4",
-    "@astrojs/react": "^6.0.1",
-    "@emdash-cms/cloudflare": "^1.3.1",
-    "@portfolio/emdash-callout": "workspace:*",
-    "@portfolio/emdash-status-images": "workspace:*",
-    "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.2.0",
-    "cf": "^1.0.0-beta.21",
-    "cn": "^0.2.4",
-    "emdash": "^1.3.1",
-    "gsap": "^3.15.0",
-    "motion": "^13.2.0",
-    "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^0.14.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "tailwindcss": "^4.3.3"
-  },
-  "devDependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.4",
-    "typescript": "^6.0.0",
-    "wrangler": "^4.152.0"
+    "dev": "bun run --filter portfolio dev",
+    "build": "bun run --filter portfolio build",
+    "deploy": "bun run --filter portfolio deploy",
+    "typecheck": "bun run --filter portfolio typecheck",
+    "types": "bun run --filter portfolio types",
+    "migrate": "bun run --filter portfolio migrate"
   },
   "patchedDependencies": {
     "emdash@1.3.1": "patches/emdash@1.3.1.patch",

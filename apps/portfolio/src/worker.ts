@@ -7,6 +7,12 @@ const MEDIA_API_PATH = "/_emdash/api/media/file/";
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 
+// `Cloudflare-CDN-Cache-Control` must be set explicitly on responses that
+// bypass Astro's cache provider. The Cloudflare adapter otherwise injects
+// `no-store` on every response without it, which makes Workers Caching report
+// `cf-cache-status: BYPASS` even when `Cache-Control` is public.
+const EDGE_CACHE_CONTROL = "public, max-age=31536000, immutable";
+
 type ImagesBinding = {
   input: (stream: ReadableStream) => {
     transform: (options: Record<string, unknown>) => {
@@ -29,66 +35,54 @@ type ExecutionContextLike = {
 // under /_emdash is authenticated admin/API traffic.
 const MEDIA_FILE_PREFIX = MEDIA_API_PATH;
 
-// With Workers Cache (wrangler "cache": { "enabled": true }) enabled,
-// responses without Cache-Control are heuristically cached for statuses like
-// 200. EmDash admin/API routes don't all set no-store, so pin them explicitly
-// to keep authenticated traffic out of the edge cache. Hashed static assets
-// (/_astro/*) are excluded so the admin SPA's own files stay cacheable.
+// Workers Caching is enabled in cloudflare.config.ts. EmDash admin/API routes
+// don't all set no-store, so pin them explicitly to keep authenticated traffic
+// out of the edge cache. Hashed static assets (/_astro/*) are excluded so the
+// admin SPA's own files stay cacheable.
 const isBypassCache = (pathname: string) =>
   pathname.startsWith("/_emdash/") &&
   !pathname.startsWith(MEDIA_FILE_PREFIX) &&
   !pathname.includes("/_astro/");
 
-const edgeCache = (caches as CacheStorage & { default: Cache }).default;
+/**
+ * Mark an immutable response as cacheable at the edge.
+ *
+ * `Cloudflare-CDN-Cache-Control` must be set explicitly: the Cloudflare adapter
+ * injects `no-store` on any response without it, which makes Workers Caching
+ * report `cf-cache-status: BYPASS` even when `Cache-Control` is public.
+ */
+function cacheableResponse(response: Response): Response {
+  const headers = new Headers(response.headers);
+  headers.delete("set-cookie");
+  headers.set("Cache-Control", EDGE_CACHE_CONTROL);
+  headers.set("Cloudflare-CDN-Cache-Control", EDGE_CACHE_CONTROL);
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
 
 /**
  * Media files are immutable (content-addressed storage keys) and are the only
- * anonymous bytes under /_emdash. Cache them explicitly at the edge: EmDash
- * attaches a D1 session bookmark via Set-Cookie, which makes the response look
- * private and the edge skip it (cf-cache-status: BYPASS). The bookmark only
- * matters for authenticated admin reads, so it is safe to drop here.
+ * anonymous bytes under /_emdash. EmDash attaches a D1 session bookmark via
+ * Set-Cookie, which makes the response look private and the edge skip it
+ * (cf-cache-status: BYPASS). The bookmark only matters for authenticated admin
+ * reads, so drop it here. Workers Caching (enabled in cloudflare.config.ts)
+ * handles storage; no manual Cache API layer is needed.
  */
 async function serveMediaFile(
   request: Request,
   env: Env,
   ctx: ExecutionContextLike,
 ): Promise<Response> {
-  if (request.method === "GET") {
-    const cached = await edgeCache.match(request);
-    if (cached) {
-      const headers = new Headers(cached.headers);
-      headers.set("X-EmDash-Media-Cache", "HIT");
-      return new Response(cached.body, {
-        status: cached.status,
-        statusText: cached.statusText,
-        headers,
-      });
-    }
-  }
-
   const response = await emdashWorker.fetch(request, env, ctx);
   if (request.method !== "GET" || !response.ok || !response.body) {
     return response;
   }
 
-  const headers = new Headers(response.headers);
-  headers.delete("set-cookie");
-  headers.set("Cache-Control", "public, max-age=31536000, immutable");
-
-  const cacheable = new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-  ctx.waitUntil(edgeCache.put(request, cacheable.clone()));
-
-  const marked = new Headers(headers);
-  marked.set("X-EmDash-Media-Cache", "MISS");
-  return new Response(cacheable.body, {
-    status: cacheable.status,
-    statusText: cacheable.statusText,
-    headers: marked,
-  });
+  return cacheableResponse(response);
 }
 
 async function serveOgImage(
@@ -128,17 +122,7 @@ async function serveOgImage(
     })
     .output({ format: "image/jpeg" });
 
-  const response = transformed.response();
-  const headers = new Headers(response.headers);
-  headers.set("Cache-Control", "public, max-age=31536000, immutable");
-
-  const cachedResponse = new Response(response.body, {
-    status: response.status,
-    headers,
-  });
-  ctx.waitUntil(edgeCache.put(request, cachedResponse.clone()));
-
-  return cachedResponse;
+  return cacheableResponse(transformed.response());
 }
 
 export default {
@@ -147,16 +131,16 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === OG_IMAGE_PATH) {
-      const cached = await edgeCache.match(request);
-      if (cached) {
-        return cached;
-      }
-
       return serveOgImage(request, env, ctx);
     }
 
     if (url.pathname.startsWith(MEDIA_FILE_PREFIX)) {
       return serveMediaFile(request, env, ctx);
+    }
+
+    if (url.pathname === "/_image") {
+      const response = await emdashWorker.fetch(request, env, ctx);
+      return response.ok ? cacheableResponse(response) : response;
     }
 
     const response = await emdashWorker.fetch(request, env, ctx);
