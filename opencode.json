@@ -1,0 +1,10 @@
+{
+  "mcp": {
+    "servers": {
+      "malindhamsara-portfolio": {
+        "type": "remote",
+        "url": "https://malindhamsara.dev/_emdash/api/mcp"
+      }
+    }
+  }
+}

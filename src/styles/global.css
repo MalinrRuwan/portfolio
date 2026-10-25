@@ -254,3 +254,23 @@
     ) !important;
   }
 }
+
+/*
+ * Wide Portable Text figures. Kept unlayered so the rule wins over EmDash's
+ * scoped figure styles, which set width and margins outside Tailwind's layers.
+ */
+.rich-text .emdash-image.emdash-image--align-wide {
+  width: min(56rem, calc(100vw - 2.5rem));
+  max-width: none;
+  margin-inline: calc((100% - min(56rem, calc(100vw - 2.5rem))) / 2);
+}
+
+.rich-text .emdash-image.emdash-image--align-wide img {
+  display: block;
+  margin-inline: auto;
+}
+
+.rich-text .emdash-image--align-wide figcaption {
+  margin-inline: auto;
+  max-width: 42rem;
+}
