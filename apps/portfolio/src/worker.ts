@@ -13,6 +13,10 @@ const OG_HEIGHT = 630;
 // `cf-cache-status: BYPASS` even when `Cache-Control` is public.
 const EDGE_CACHE_CONTROL = "public, max-age=31536000, immutable";
 
+// One year, including subdomains. Add `; preload` only after the domain has
+// been submitted to and accepted by the HSTS preload list.
+const HSTS_HEADER = "max-age=31536000; includeSubDomains";
+
 type ImagesBinding = {
   input: (stream: ReadableStream) => {
     transform: (options: Record<string, unknown>) => {
@@ -62,6 +66,30 @@ function cacheableResponse(response: Response): Response {
     statusText: response.statusText,
     headers,
   });
+}
+
+/**
+ * Apply HSTS to every HTTPS response, including errors and assets served by
+ * the Worker. HTTP dev-server responses are left alone.
+ */
+function withHsts(response: Response, request: Request): Response {
+  if (new URL(request.url).protocol !== "https:") return response;
+
+  try {
+    // Most responses have mutable headers; avoid cloning the body and
+    // collapsing any Set-Cookie headers.
+    response.headers.set("Strict-Transport-Security", HSTS_HEADER);
+    return response;
+  } catch {
+    const headers = new Headers(response.headers);
+    headers.set("Strict-Transport-Security", HSTS_HEADER);
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  }
 }
 
 /**
@@ -125,35 +153,44 @@ async function serveOgImage(
   return cacheableResponse(transformed.response());
 }
 
+async function handleRequest(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContextLike,
+): Promise<Response> {
+  const url = new URL(request.url);
+
+  if (url.pathname === OG_IMAGE_PATH) {
+    return serveOgImage(request, env, ctx);
+  }
+
+  if (url.pathname.startsWith(MEDIA_FILE_PREFIX)) {
+    return serveMediaFile(request, env, ctx);
+  }
+
+  if (url.pathname === "/_image") {
+    const response = await emdashWorker.fetch(request, env, ctx);
+    return response.ok ? cacheableResponse(response) : response;
+  }
+
+  const response = await emdashWorker.fetch(request, env, ctx);
+  if (isBypassCache(url.pathname)) {
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", "private, no-store");
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  }
+
+  return response;
+}
+
 export default {
   ...emdashWorker,
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike) {
-    const url = new URL(request.url);
-
-    if (url.pathname === OG_IMAGE_PATH) {
-      return serveOgImage(request, env, ctx);
-    }
-
-    if (url.pathname.startsWith(MEDIA_FILE_PREFIX)) {
-      return serveMediaFile(request, env, ctx);
-    }
-
-    if (url.pathname === "/_image") {
-      const response = await emdashWorker.fetch(request, env, ctx);
-      return response.ok ? cacheableResponse(response) : response;
-    }
-
-    const response = await emdashWorker.fetch(request, env, ctx);
-    if (isBypassCache(url.pathname)) {
-      const headers = new Headers(response.headers);
-      headers.set("Cache-Control", "private, no-store");
-      return new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers,
-      });
-    }
-
-    return response;
+    const response = await handleRequest(request, env, ctx);
+    return withHsts(response, request);
   },
 };
